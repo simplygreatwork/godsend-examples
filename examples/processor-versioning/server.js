@@ -1,5 +1,5 @@
-var Class = require('../../godsend.js').Class;
-var Bus = require('../../godsend.js').Bus;
+var Class = require('godsend').Class;
+var Bus = require('godsend').Bus;
 var Server = require('../shared/server/Server');
 var Authorizer = require('../shared/server/Authorizer');
 var Credentials = require('../shared/server/Credentials');
