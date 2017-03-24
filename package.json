@@ -1,0 +1,40 @@
+{
+  "name": "godsend-examples",
+  "description": "Godsend: simple and elegant messaging for microservices.",
+  "author": "Philip Weaver",
+  "contributors": [],
+  "version": "0.2.0",
+  "main": "",
+  "scripts": {
+    "start": ""
+  },
+  "dependencies": {
+    "express": "^0.2.0",
+    "express": "^4.15.2",
+    "js-logger": "1.3.0",
+    "serve-index": "1.8.0",
+    "uuid": "^3.0.1"
+  },
+  "devDependencies": {
+    "tape": "4.6.3"
+  },
+  "engines": {
+    "node": "4.6.x"
+  },
+  "keywords": [
+    "microservice",
+    "microservices",
+    "messaging",
+    "message-bus",
+    "message-broker"
+  ],
+  "license" : "MIT",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/simplygreatwork/godsend-examples.git"
+  },
+  "bugs" : {
+    "url" : "https://github.com/simplygreatwork/godsend/issues",
+    "email" : "simplygreatwork@gmail.com"
+  }
+}
