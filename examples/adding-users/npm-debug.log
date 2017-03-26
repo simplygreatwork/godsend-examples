@@ -1,0 +1,36 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/home/ubuntu/.nvm/versions/node/v4.7.3/bin/node',
+1 verbose cli   '/home/ubuntu/.nvm/versions/node/v4.7.3/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '.' ]
+2 info using npm@2.15.11
+3 info using node@v4.7.3
+4 verbose install initial load of /home/ubuntu/workspace/godsend-examples/package.json
+5 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/godsend-examples/node_modules/godsend/package.json
+6 verbose installManyTop reading scoped package data from /home/ubuntu/workspace/godsend-examples/node_modules/godsend-basics/package.json
+7 verbose readDependencies loading dependencies from /home/ubuntu/workspace/godsend-examples/package.json
+8 silly cache add args [ '.', null ]
+9 verbose cache add spec .
+10 silly cache add parsed spec Result {
+10 silly cache add   raw: '.',
+10 silly cache add   scope: null,
+10 silly cache add   name: null,
+10 silly cache add   rawSpec: '.',
+10 silly cache add   spec: '/home/ubuntu/workspace/godsend-examples/examples/adding-users',
+10 silly cache add   type: 'local' }
+11 error addLocal Could not install /home/ubuntu/workspace/godsend-examples/examples/adding-users
+12 verbose stack Error: EISDIR: illegal operation on a directory, read
+12 verbose stack     at Error (native)
+13 verbose cwd /home/ubuntu/workspace/godsend-examples/examples/adding-users
+14 error Linux 4.8.8-c9
+15 error argv "/home/ubuntu/.nvm/versions/node/v4.7.3/bin/node" "/home/ubuntu/.nvm/versions/node/v4.7.3/bin/npm" "install" "."
+16 error node v4.7.3
+17 error npm  v2.15.11
+18 error code EISDIR
+19 error errno -21
+20 error syscall read
+21 error eisdir EISDIR: illegal operation on a directory, read
+21 error eisdir This is most likely not a problem with npm itself
+21 error eisdir and is related to npm not being able to find a package.json in
+21 error eisdir a package you are trying to install.
+22 verbose exit [ -21, true ]

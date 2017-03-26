@@ -9,11 +9,12 @@ Example = Class.extend({
 		
 		new basic.Server({
 			exchange: new godsend.Exchange.Learning({
-				users: JSON.parse(JSON.stringify(this.users))							// killing gremlins
+				users: this.users
 			})
 		}).start(function() {
 			new basic.Authorizer({
-				users: this.users
+				users: this.users,
+				dirname : __dirname
 			}).connect(function() {
 				new Agent().connect(function() {
 					new Sender().connect(function() {
@@ -23,65 +24,69 @@ Example = Class.extend({
 			});
 		}.bind(this));
 	},
-
+	
 	users: {
-		"broker": {
-			"credentials": {
-				"username": "broker",
-				"passphrase": "passphrase-to-hash"
+		"broker" : {
+			"credentials" : {
+				"username" : "broker",
+				"passphrase" : "passphrase-to-hash"
 			},
-			"patterns": {
-				"sendable": [{
-					"topic": "authentication",
-					"action": "get-user"
+			"patterns" : {
+				"sendable" : [{
+					"topic" : "authentication",
+					"action" : "get-user"
 				}],
-				"receivable": [{
-					"topic": "authentication",
-					"action": "sign-in"
+				"receivable" : [{
+					"topic" : "authentication",
+					"action" : "sign-in"
 				}]
 			}
 		},
-		"authenticator": {
-			"credentials": {
-				"username": "authenticator",
-				"passphrase": "passphrase-to-hash"
+		"authenticator" : {
+			"credentials" : {
+				"username" : "authenticator",
+				"passphrase" : "passphrase-to-hash"
 			},
-			"patterns": {
-				"sendable": [],
-				"receivable": [{
-					"topic": "authentication",
-					"action": "get-user"
+			"patterns" : {
+				"sendable" : [],
+				"receivable" : [{
+					"topic" : "authentication",
+					"action" : "get-user"
 				}, {
-					"topic": "authentication",
-					"action": "put-user"
+					"topic" : "authentication",
+					"action" : "put-user"
 				}]
 			}
 		},
-		"agent": {
-			"credentials": {
-				"username": "agent",
-				"passphrase": "passphrase-to-hash"
+		"agent" : {
+			"credentials" : {
+				"username" : "agent",
+				"passphrase" : "passphrase-to-hash"
 			},
-			"patterns": {
-				"sendable": [],
-				"receivable": []
+			"patterns" : {
+				"sendable" : [],
+				"receivable" : [{
+					"topic" : "post-message"
+				}]
 			}
 		},
-		"sender": {
-			"credentials": {
-				"username": "sender",
-				"passphrase": "passphrase-to-hash"
+		"sender" : {
+			"credentials" : {
+				"username" : "sender",
+				"passphrase" : "passphrase-to-hash"
 			},
-			"patterns": {
-				"sendable": [],
-				"receivable": []
+			"patterns" : {
+				"sendable" : [{
+					"topic" : "post-message"
+				}],
+				"receivable" : []
 			}
-		},
+		}
 	}
 });
 
 Agent = Class.extend({
-
+	
 	initialize: function(properties) {
 
 		Object.assign(this, properties);
@@ -155,7 +160,7 @@ Sender = Class.extend({
 						message: 'Can you hear me now?'
 					},
 					receive: function(result) {
-						console.log('Received response: ' + JSON.stringify(result.objects));
+						console.log('result: ' + JSON.stringify(result.objects));
 					}.bind(this)
 				});
 

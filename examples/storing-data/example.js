@@ -68,7 +68,7 @@ Agent = Class.extend({
 		Object.assign(this, properties);
 		this.storage = {};
 	},
-
+	
 	connect: function(callback) {
 		
 		new godsend.Bus({
@@ -221,7 +221,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result, null, 2));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
@@ -243,7 +243,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result, null, 2));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
@@ -265,7 +265,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result, null, 2));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
@@ -289,7 +289,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result, null, 2));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});

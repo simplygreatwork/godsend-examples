@@ -10,7 +10,8 @@ Example = Class.extend({
 		
 		new basic.Server().start(function() {
 			new basic.Authorizer({
-				users: this.users
+				users: this.users,
+				dirname : __dirname
 			}).connect(function() {
 				new Agent().connect(function() {
 					new Client().start(function() {
@@ -220,7 +221,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result.objects, null, 2));
+						console.log('result: ' + JSON.stringify(result.objects, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
@@ -242,7 +243,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result.objects, null, 2));
+						console.log('result: ' + JSON.stringify(result.objects, null, 2));
 						sequence.next();
 					}.bind(this)
 				});

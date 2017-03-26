@@ -30,31 +30,18 @@ Example = Class.extend({
 			patterns: {
 				sendable: [],
 				receivable: [{
-					topic: 'post-message'
+					action: 'transform-object'
 				}]
-			}
-		},
-		'public': {
-			credentials: {
-				username: basic.Credentials.get('public').username,
-				passphrase: basic.Credentials.get('public').passphrase,
-			},
-			patterns: {
-				sendable: [{
-					topic: 'authentication',
-					action: 'sign-in'
-				}],
-				receivable: []
 			}
 		},
 		'sender': {
 			credentials: {
-				username: basic.Credentials.get('sender').username,
-				passphrase: basic.Credentials.get('sender').passphrase,
+				username: Credentials.get('sender').username,
+				passphrase: Credentials.get('sender').passphrase,
 			},
 			patterns: {
 				sendable: [{
-					topic: 'post-message'
+					action: 'transform-object'
 				}],
 				receivable: []
 			}
@@ -65,11 +52,10 @@ Example = Class.extend({
 Agent = Class.extend({
 
 	initialize: function(properties) {
-
+		
 		Object.assign(this, properties);
-		this.storage = {};
 	},
-
+	
 	connect: function(callback) {
 		
 		new godsend.Bus({
@@ -85,20 +71,20 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 	},
-
+	
 	process: function(connection) {
-
+		
 		connection.process({
-			id: 'post-message',
+			id: 'transform-object',
 			on: function(request) {
 				request.accept({
-					topic: 'post-message'
+					action: 'transform-object'
 				});
 			}.bind(this),
 			run: function(stream) {
-				stream.push({
-					message: 'Received the secure message from the client!'
-				});
+				var object = stream.object;
+				object.date = new Date();
+				stream.push(object);
 				stream.next();
 			}.bind(this)
 		});
@@ -122,65 +108,34 @@ Sender = Class.extend({
 			}.bind(this)
 		});
 	},
-	
+
 	start: function(connection) {
 		
-		var sequence = Sequence.start(
+		var sequence = godsend.Sequence.start(
 			
 			function() {
 				
 				connection.send({
 					pattern: {
-						topic: 'post-message'
+						action: 'transform-object'
 					},
-					data: {
-						message: 'Message'
+					write: function(stream) {
+						setInterval(function() {
+							stream.write({
+								type: 'object'
+							});
+						}.bind(this), 1000);
+					}.bind(this),
+					read: function(object) {
+						console.log('result: ' + JSON.stringify(object, null, 2));
 					},
-					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result.objects));
-						sequence.next();
-					}.bind(this)
+					error: function(error) {
+						console.log('error: ' + JSON.stringify(error, null, 2));
+					}
 				});
-
-			}.bind(this),
-
-			function() {
-
-				connection.send({
-					pattern: {
-						topic: 'authentication',
-						action: 'sign-in'
-					},
-					data: {
-						credentials: {
-							username: Credentials.get('client').username,
-							passphrase: Credentials.get('client').passphrase,
-						},
-					},
-					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result.objects));
-						sequence.next();
-					}.bind(this)
-				});
-
-			}.bind(this),
-
-			function() {
-
-				connection.send({
-					pattern: {
-						topic: 'post-message'
-					},
-					data: {
-						message: 'Message'
-					},
-					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result.objects));
-						sequence.next();
-					}.bind(this)
-				});
-
+				
 			}.bind(this)
+			
 		);
 	}
 });
