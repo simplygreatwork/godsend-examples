@@ -1,31 +1,31 @@
-var Class = require('godsend').Class;
-var Bus = require('godsend').Bus;
-var Server = require('../shared/server/Server');
-var Authorizer = require('../shared/server/Authorizer');
-var Credentials = require('../shared/server/Credentials');
-var Client = require('./client.js');
+
+var godsend = require('godsend');
+var basic = require('godsend-basics');
+var Class = godsend.Class; 
+var uuid = require('uuid');
 
 Example = Class.extend({
-
+	
 	initialize: function(properties) {
-
-		new Server().start(function() {
-			new Authorizer({
+		
+		new basic.Server().start(function() {
+			new basic.Authorizer({
 				users: this.users
 			}).connect(function() {
 				new Agent().connect(function() {
-					console.log('Everything has been started.');
-					new Client({});
+					new Sender().connect(function() {
+						console.log('Everything has been started.');
+					});
 				}.bind(this));
 			});
 		}.bind(this));
 	},
-
+	
 	users: {
 		'agent': {
 			credentials: {
-				username: Credentials.get('agent').username,
-				passphrase: Credentials.get('agent').passphrase,
+				username: basic.Credentials.get('agent').username,
+				passphrase: basic.Credentials.get('agent').passphrase,
 			},
 			patterns: {
 				sendable: [],
@@ -40,10 +40,10 @@ Example = Class.extend({
 				}]
 			}
 		},
-		'client': {
+		'sender': {
 			credentials: {
-				username: Credentials.get('client').username,
-				passphrase: Credentials.get('client').passphrase,
+				username: Credentials.get('sender').username,
+				passphrase: Credentials.get('sender').passphrase,
 			},
 			patterns: {
 				sendable: [{
@@ -70,8 +70,8 @@ Agent = Class.extend({
 	},
 
 	connect: function(callback) {
-
-		new Bus({
+		
+		new godsend.Bus({
 			address: 'http://127.0.0.1:8080/'
 		}).connect({
 			credentials: {
@@ -79,16 +79,15 @@ Agent = Class.extend({
 				passphrase: Credentials.get('agent').passphrase,
 			},
 			responded: function(result) {
-				this.connection = result.connection;
-				this.process();
+				this.process(result.connection);
 				callback();
 			}.bind(this)
 		});
 	},
 
-	process: function() {
+	process: function(connection) {
 
-		this.connection.process({
+		connection.process({
 			id: 'store-all-tasks',
 			on: function(request) {
 				request.accept({
@@ -119,7 +118,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 
-		this.connection.process({
+		connection.process({
 			id: 'store-put',
 			cache: false,
 			on: function(request) {
@@ -139,7 +138,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 
-		this.connection.process({
+		connection.process({
 			id: 'store-put-tasks-validate',
 			before: 'store-put',
 			on: function(request) {
@@ -162,8 +161,8 @@ Agent = Class.extend({
 				}
 			}.bind(this)
 		});
-
-		this.connection.process({
+		
+		connection.process({
 			id: 'store-put-tasks-transform',
 			before: 'store-put-tasks-validate',
 			on: function(request) {
@@ -185,4 +184,120 @@ Agent = Class.extend({
 	}
 });
 
-new Example({});
+Sender = Class.extend({
+	
+	connect: function(callback) {
+		
+		new Bus({
+			address: 'http://127.0.0.1:8080'
+		}).connect({
+			credentials: {
+				username: Credentials.get('sender').username,
+				passphrase: Credentials.get('sender').passphrase,
+			},
+			responded: function(result) {
+				this.start(result.connection);
+				callback();
+			}.bind(this)
+		});
+	},
+
+	start: function(connection) {
+
+		var sequence = godsend.Sequence.start(
+
+			function() {
+
+				connection.send({
+					pattern: {
+						topic: 'store',
+						action: 'put',
+						collection: 'tasks'
+					},
+					data: {
+						key: uuid.v4(),
+						value: {
+							number: 1
+						}
+					},
+					receive: function(result) {
+						console.log('Result: ' + JSON.stringify(result, null, 2));
+						sequence.next();
+					}.bind(this)
+				});
+
+			}.bind(this),
+
+			function() {
+				
+				connection.send({
+					pattern: {
+						topic: 'store',
+						action: 'put',
+						collection: 'tasks'
+					},
+					data: {
+						key: uuid.v4(),
+						value: {
+							title: 'New Task'
+						}
+					},
+					receive: function(result) {
+						console.log('Result: ' + JSON.stringify(result, null, 2));
+						sequence.next();
+					}.bind(this)
+				});
+
+			}.bind(this),
+
+			function() {
+
+				connection.send({
+					pattern: {
+						topic: 'store',
+						action: 'put',
+						collection: 'tasks'
+					},
+					data: {
+						key: uuid.v4(),
+						value: {
+							title: 'Another New Task'
+						}
+					},
+					receive: function(result) {
+						console.log('Result: ' + JSON.stringify(result, null, 2));
+						sequence.next();
+					}.bind(this)
+				});
+
+			}.bind(this),
+			
+			function() {
+
+				connection.send({
+					pattern: {
+						topic: 'store',
+						action: 'all',
+						collection: 'tasks'
+					},
+					data: {
+						limit: 10,
+						fields: {
+							id: true,
+							title: true,
+							created: true
+						}
+					},
+					receive: function(result) {
+						console.log('Result: ' + JSON.stringify(result, null, 2));
+						sequence.next();
+					}.bind(this)
+				});
+
+			}.bind(this)
+
+		);
+	}
+});
+
+new Example();

@@ -1,5 +1,44 @@
 {
   "users": {
+    "broker": {
+      "credentials": {
+        "username": "broker",
+        "passphrase": "passphrase-to-hash"
+      },
+      "patterns": {
+        "sendable": [
+          {
+            "topic": "authentication",
+            "action": "get-user"
+          }
+        ],
+        "receivable": [
+          {
+            "topic": "authentication",
+            "action": "sign-in"
+          }
+        ]
+      }
+    },
+    "authenticator": {
+      "credentials": {
+        "username": "authenticator",
+        "passphrase": "passphrase-to-hash"
+      },
+      "patterns": {
+        "sendable": [],
+        "receivable": [
+          {
+            "topic": "authentication",
+            "action": "get-user"
+          },
+          {
+            "topic": "authentication",
+            "action": "put-user"
+          }
+        ]
+      }
+    },
     "agent": {
       "credentials": {
         "username": "agent",
@@ -14,38 +53,9 @@
         ]
       }
     },
-    "public": {
+    "sender": {
       "credentials": {
-        "username": "public",
-        "passphrase": ""
-      },
-      "patterns": {
-        "sendable": [
-          {
-            "topic": "authentication",
-            "action": "sign-in"
-          }
-        ],
-        "receivable": []
-      }
-    },
-    "client": {
-      "credentials": {
-        "username": "client",
-        "passphrase": "passphrase-to-hash"
-      },
-      "patterns": {
-        "sendable": [
-          {
-            "topic": "post-message"
-          }
-        ],
-        "receivable": []
-      }
-    },
-    "new-user": {
-      "credentials": {
-        "username": "new-user",
+        "username": "sender",
         "passphrase": "passphrase-to-hash"
       },
       "patterns": {

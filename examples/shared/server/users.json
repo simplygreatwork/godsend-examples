@@ -31,36 +31,23 @@
 			}]
 		}
 	},
-	"logger" : {
+	"agent" : {
 		"credentials" : {
-			"username" : "logger",
+			"username" : "agent",
 			"passphrase" : "passphrase-to-hash"
 		},
 		"patterns" : {
-			"sendable" : [{
-				"topic" : "examples-logging"
-			}],
-			"receivable" : [{
-				"topic" : "examples-logging"
-			}]
+			"sendable" : [],
+			"receivable" : []
 		}
 	},
-	"admin" : {
+	"sender" : {
 		"credentials" : {
-			"username" : "admin",
+			"username" : "sender",
 			"passphrase" : "passphrase-to-hash"
 		},
 		"patterns" : {
-			"sendable" : [{
-				"topic" : "authentication",
-				"action" : "get-user"
-			}, {
-				"topic" : "authentication",
-				"action" : "put-user"
-			}, {
-				"topic" : "authentication",
-				"action" : "sign-in"
-			}],
+			"sendable" : [],
 			"receivable" : []
 		}
 	}

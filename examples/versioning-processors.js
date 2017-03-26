@@ -1,21 +1,21 @@
-var Class = require('godsend').Class;
-var Bus = require('godsend').Bus;
-var Server = require('../shared/server/Server');
-var Authorizer = require('../shared/server/Authorizer');
-var Credentials = require('../shared/server/Credentials');
-var Client = require('./client.js');
+
+var godsend = require('godsend');
+var basic = require('godsend-basics');
+var Class = godsend.Class; 
+var uuid = require('uuid');
 
 Example = Class.extend({
 	
 	initialize: function(properties) {
 		
-		new Server().start(function() {
-			new Authorizer({
+		new basic.Server().start(function() {
+			new basic.Authorizer({
 				users: this.users
 			}).connect(function() {
 				new Agent().connect(function() {
-					console.log('Everything has been started.');
-					new Client({});
+					new Sender().connect(function() {
+						console.log('Everything has been started.');
+					});
 				}.bind(this));
 			});
 		}.bind(this));
@@ -24,8 +24,8 @@ Example = Class.extend({
 	users: {
 		'agent': {
 			credentials: {
-				username: Credentials.get('agent').username,
-				passphrase: Credentials.get('agent').passphrase,
+				username: basic.Credentials.get('agent').username,
+				passphrase: basic.Credentials.get('agent').passphrase,
 			},
 			patterns: {
 				sendable: [],
@@ -37,8 +37,8 @@ Example = Class.extend({
 		},
 		'sender': {
 			credentials: {
-				username: Credentials.get('sender').username,
-				passphrase: Credentials.get('sender').passphrase,
+				username: basic.Credentials.get('sender').username,
+				passphrase: basic.Credentials.get('sender').passphrase,
 			},
 			patterns: {
 				sendable: [{
@@ -64,25 +64,24 @@ Agent = Class.extend({
 	},
 
 	connect: function(callback) {
-
-		new Bus({
+		
+		new godsend.Bus({
 			address: 'http://127.0.0.1:8080/'
 		}).connect({
 			credentials: {
-				username: Credentials.get('agent').username,
-				passphrase: Credentials.get('agent').passphrase,
+				username: basic.Credentials.get('agent').username,
+				passphrase: basic.Credentials.get('agent').passphrase,
 			},
 			responded: function(result) {
-				this.connection = result.connection;
-				this.process();
+				this.process(result.connection);
 				callback();
 			}.bind(this)
 		});
 	},
 
-	process: function() {
-
-		this.connection.process({
+	process: function(connection) {
+		
+		connection.process({
 			id: 'store-get',
 			cache: false,
 			on: function(request) {
@@ -101,8 +100,8 @@ Agent = Class.extend({
 				stream.next();
 			}.bind(this)
 		});
-
-		this.connection.process({
+		
+		connection.process({
 			id: 'store-get-tasks-transform',
 			after: 'store-get',
 			on: function(request) {
@@ -119,7 +118,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 		
-		this.connection.process({
+		connection.process({
 			id: 'store-get-tasks-transform',
 			version: {
 				name: 'version-two',
@@ -139,8 +138,8 @@ Agent = Class.extend({
 				stream.next();
 			}.bind(this)
 		});
-
-		this.connection.process({
+		
+		connection.process({
 			id: 'store-get-tasks-transform',
 			version: 'version-three',
 			after: 'store-get',
@@ -160,4 +159,51 @@ Agent = Class.extend({
 	}
 });
 
-new Example({});
+Sender = Class.extend({
+	
+	connect: function(callback) {
+		
+		new Bus({
+			address: 'http://127.0.0.1:8080'
+		}).connect({
+			credentials: {
+				username: basic.Credentials.get('sender').username,
+				passphrase: basic.Credentials.get('sender').passphrase,
+			},
+			responded: function(result) {
+				this.start(result.connection);
+				callback();
+			}.bind(this)
+		});
+	},
+
+	start: function(connection) {
+
+		var sequence = Sequence.start(
+
+			function() {
+				
+				connection.send({
+					pattern: {
+						topic: 'store',
+						action: 'get',
+						collection: 'tasks'
+					},
+					data: {
+						key: uuid.v4()
+					},
+					receive: function(result) {
+						console.log('result: ' + JSON.stringify(result.objects, null, 2));
+						sequence.next();
+					}.bind(this)
+				});
+
+				sequence.next();
+
+			}.bind(this)
+
+		);
+	}
+});
+
+new Example();
