@@ -41,8 +41,8 @@ Example = Class.extend({
 		},
 		'sender': {
 			credentials: {
-				username: Credentials.get('sender').username,
-				passphrase: Credentials.get('sender').passphrase,
+				username: basic.Credentials.get('sender').username,
+				passphrase: basic.Credentials.get('sender').passphrase,
 			},
 			patterns: {
 				sendable: [{
@@ -59,8 +59,8 @@ Example = Class.extend({
 		},
 		'task-receiver': {
 			credentials: {
-				username: Credentials.get('task-receiver').username,
-				passphrase: Credentials.get('task-receiver').passphrase,
+				username: basic.Credentials.get('task-receiver').username,
+				passphrase: basic.Credentials.get('task-receiver').passphrase,
 			},
 			patterns: {
 				sendable: [],
@@ -73,8 +73,8 @@ Example = Class.extend({
 		},
 		'patient-receiver': {
 			credentials: {
-				username: Credentials.get('patient-receiver').username,
-				passphrase: Credentials.get('patient-receiver').passphrase,
+				username: basic.Credentials.get('patient-receiver').username,
+				passphrase: basic.Credentials.get('patient-receiver').passphrase,
 			},
 			patterns: {
 				sendable: [],
@@ -102,8 +102,8 @@ Agent = Class.extend({
 			address: 'http://127.0.0.1:8080/'
 		}).connect({
 			credentials: {
-				username: Credentials.get('agent').username,
-				passphrase: Credentials.get('agent').passphrase,
+				username: basic.Credentials.get('agent').username,
+				passphrase: basic.Credentials.get('agent').passphrase,
 			},
 			responded: function(result) {
 				this.process(result.connection);
@@ -191,8 +191,8 @@ Sender = Class.extend({
 			address: 'http://127.0.0.1:8080'
 		}).connect({
 			credentials: {
-				username: Credentials.get('sender').username,
-				passphrase: Credentials.get('sender').passphrase,
+				username: basic.Credentials.get('sender').username,
+				passphrase: basic.Credentials.get('sender').passphrase,
 			},
 			responded: function(result) {
 				this.connection = result.connection;
@@ -262,8 +262,8 @@ Receiver = {
 			
 			this.bus.connect({
 				credentials: {
-					username: Credentials.get('task-receiver').username,
-					passphrase: Credentials.get('task-receiver').passphrase,
+					username: basic.Credentials.get('task-receiver').username,
+					passphrase: basic.Credentials.get('task-receiver').passphrase,
 				},
 				responded: function(result) {
 					this.process(result.connection);
@@ -312,8 +312,8 @@ Receiver = {
 			
 			this.bus.connect({
 				credentials: {
-					username: Credentials.get('patient-receiver').username,
-					passphrase: Credentials.get('patient-receiver').passphrase,
+					username: basic.Credentials.get('patient-receiver').username,
+					passphrase: basic.Credentials.get('patient-receiver').passphrase,
 				},
 				responded: function(result) {
 					this.process(result.connection);

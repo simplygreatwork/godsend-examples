@@ -76,8 +76,8 @@ Agent = Class.extend({
 			address: 'http://127.0.0.1:8080/'
 		}).connect({
 			credentials: {
-				username: Credentials.get('agent').username,
-				passphrase: Credentials.get('agent').passphrase,
+				username: basic.Credentials.get('agent').username,
+				passphrase: basic.Credentials.get('agent').passphrase,
 			},
 			responded: function(result) {
 				this.process(result.connection);
@@ -113,8 +113,8 @@ Sender = Class.extend({
 			address: 'http://127.0.0.1:8080'
 		}).connect({
 			credentials: {
-				username: Credentials.get('sender').username,
-				passphrase: Credentials.get('sender').passphrase,
+				username: basic.Credentials.get('sender').username,
+				passphrase: basic.Credentials.get('sender').passphrase,
 			},
 			responded: function(result) {
 				this.start(result.connection);
@@ -153,8 +153,8 @@ Sender = Class.extend({
 					},
 					data: {
 						credentials: {
-							username: Credentials.get('client').username,
-							passphrase: Credentials.get('client').passphrase,
+							username: basic.Credentials.get('client').username,
+							passphrase: basic.Credentials.get('client').passphrase,
 						},
 					},
 					receive: function(result) {
