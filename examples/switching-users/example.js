@@ -97,7 +97,7 @@ Agent = Class.extend({
 			}.bind(this),
 			run: function(stream) {
 				stream.push({
-					message: 'Received the secure message from the client!'
+					message: 'Received the secure message from the sender!'
 				});
 				stream.next();
 			}.bind(this)
@@ -113,8 +113,8 @@ Sender = Class.extend({
 			address: 'http://127.0.0.1:8080'
 		}).connect({
 			credentials: {
-				username: basic.Credentials.get('sender').username,
-				passphrase: basic.Credentials.get('sender').passphrase,
+				username: basic.Credentials.get('public').username,
+				passphrase: basic.Credentials.get('public').passphrase,
 			},
 			responded: function(result) {
 				this.start(result.connection);
@@ -153,8 +153,8 @@ Sender = Class.extend({
 					},
 					data: {
 						credentials: {
-							username: basic.Credentials.get('client').username,
-							passphrase: basic.Credentials.get('client').passphrase,
+							username: basic.Credentials.get('sender').username,
+							passphrase: basic.Credentials.get('sender').passphrase,
 						},
 					},
 					receive: function(result) {
