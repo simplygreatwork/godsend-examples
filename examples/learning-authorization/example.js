@@ -13,8 +13,7 @@ Example = Class.extend({
 			})
 		}).start(function() {
 			new basic.Authorizer({
-				users: this.users,
-				dirname : __dirname
+				users: this.users
 			}).connect(function() {
 				new Agent().connect(function() {
 					new Sender().connect(function() {
