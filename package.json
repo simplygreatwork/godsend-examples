@@ -3,14 +3,14 @@
   "description": "Godsend: simple and elegant messaging for microservices.",
   "author": "Philip Weaver",
   "contributors": [],
-  "version": "0.3.3",
+  "version": "0.3.4",
   "main": "",
   "scripts": {
     "start": ""
   },
   "dependencies": {
-    "godsend": "^0.3.3",
-    "godsend-basics": "^0.3.3",
+    "godsend": "^0.3.4",
+    "godsend-basics": "^0.3.4",
     "js-logger": "1.3.0",
     "uuid": "^3.0.1"
   },

@@ -49,7 +49,7 @@ Example = Class.extend({
 				receivable: []
 			},
 			versions: {
-				'store-get-tasks-transform': ' unversioned '
+				'store-get-tasks-transform': 'version-three'
 			}
 		}
 	}
