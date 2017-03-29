@@ -3,7 +3,7 @@
   "description": "Godsend: simple and elegant messaging for microservices.",
   "author": "Philip Weaver",
   "contributors": [],
-  "version": "0.2.15",
+  "version": "0.2.16",
   "main": "",
   "scripts": {
     "start": ""
