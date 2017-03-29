@@ -8,7 +8,7 @@ Example = Class.extend({
 	initialize: function(properties) {
 		
 		new basic.Server({
-			exchange: new godsend.Exchange.Learning({
+			exchange: new godsend.Exchange.Secure({
 				users: this.users
 			})
 		}).start(function() {
@@ -34,10 +34,19 @@ Example = Class.extend({
 				"sendable" : [{
 					"topic" : "authentication",
 					"action" : "get-user"
+				}, {
+					"topic" : "presence",
+					"action" : "online"
+				}, {
+					"topic" : "presence",
+					"action" : "offline"
 				}],
 				"receivable" : [{
 					"topic" : "authentication",
 					"action" : "sign-in"
+				}, {
+					"topic" : "authentication",
+					"action" : "sign-out"
 				}]
 			}
 		},
@@ -64,9 +73,7 @@ Example = Class.extend({
 			},
 			"patterns" : {
 				"sendable" : [],
-				"receivable" : [{
-					"topic" : "post-message"
-				}]
+				"receivable" : []
 			}
 		},
 		"sender" : {
@@ -75,9 +82,7 @@ Example = Class.extend({
 				"passphrase" : "passphrase-to-hash"
 			},
 			"patterns" : {
-				"sendable" : [{
-					"topic" : "post-message"
-				}],
+				"sendable" : [],
 				"receivable" : []
 			}
 		}
@@ -109,7 +114,7 @@ Agent = Class.extend({
 	},
 
 	process: function(connection) {
-
+		
 		connection.process({
 			id: 'post-message',
 			on: function(request, response) {
@@ -119,7 +124,7 @@ Agent = Class.extend({
 			}.bind(this),
 			run: function(stream) {
 				stream.push({
-					message: 'Learned a message from the client: ' + JSON.stringify(stream.object)
+					message: 'Received a secure message from the client: ' + JSON.stringify(stream.object)
 				});
 				stream.next();
 			}.bind(this)
@@ -128,9 +133,9 @@ Agent = Class.extend({
 });
 
 Sender = Class.extend({
-
+	
 	connect: function(callback) {
-
+		
 		new Bus({
 			address: 'http://127.0.0.1:8080'
 		}).connect({
@@ -144,7 +149,7 @@ Sender = Class.extend({
 			}.bind(this)
 		});
 	},
-
+	
 	start: function(connection) {
 
 		var sequence = godsend.Sequence.start(
