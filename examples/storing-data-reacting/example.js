@@ -204,7 +204,7 @@ Sender = Class.extend({
 	start: function() {
 
 		var connection = this.connection;
-		var sequence = Sequence.start(
+		var sequence = godsend.Sequence.start(
 
 			function() {
 

@@ -61,9 +61,8 @@ Agent = Class.extend({
 	initialize: function(properties) {
 
 		Object.assign(this, properties);
-		this.storage = {};
 	},
-
+	
 	connect: function(callback) {
 		
 		new godsend.Bus({
@@ -119,8 +118,8 @@ Administrator = Class.extend({
 	
 	start: function(connection) {
 		
-		var sequence = Sequence.start(
-
+		var sequence = godsend.Sequence.start(
+			
 			function() {
 				
 				connection.send({
