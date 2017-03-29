@@ -16,7 +16,7 @@ Client = Class.extend({
 });
 
 Sender = Class.extend({
-
+	
 	connect: function(callback) {
 
 		this.bus.connect({
