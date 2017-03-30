@@ -161,10 +161,6 @@ Sender = Class.extend({
 				console.error('Connection errors: ' + errors);
 				callback(errors);
 			}.bind(this)
-			responded: function(result) {
-				this.start(result.connection);
-				callback();
-			}.bind(this)
 		});
 	},
 	
