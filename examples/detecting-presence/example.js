@@ -107,7 +107,7 @@ Agent = Class.extend({
 				});
 			}.bind(this),
 			run: function(stream) {
-				console.log('The agent has was notified that "' + stream.object.username + '" has come online.');
+				console.log('The agent was notified that "' + stream.object.username + '" has come online.');
 				stream.next();
 			}.bind(this)
 		});
@@ -121,7 +121,7 @@ Agent = Class.extend({
 				});
 			}.bind(this),
 			run: function(stream) {
-				console.log('The agent has was notified that "' + stream.object.username + '" has gone offline.');
+				console.log('The agent was notified that "' + stream.object.username + '" has gone offline.');
 				stream.next();
 			}.bind(this)
 		});
