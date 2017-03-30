@@ -79,8 +79,15 @@ Agent = Class.extend({
 				username: basic.Credentials.get('agent').username,
 				passphrase: basic.Credentials.get('agent').passphrase,
 			},
-			responded: function(result) {
-				this.process(result.connection);
+			initialized : function(connection) {
+				this.process(connection);
+			}.bind(this),
+			connected: function(connection) {
+				this.connection = connection;
+				callback();
+			}.bind(this),
+			errored : function(errors) {
+				console.error('Connection errors: ' + errors);
 				callback();
 			}.bind(this)
 		});
@@ -116,8 +123,15 @@ Sender = Class.extend({
 				username: basic.Credentials.get('public').username,
 				passphrase: basic.Credentials.get('public').passphrase,
 			},
-			responded: function(result) {
-				this.start(result.connection);
+			initialized : function(connection) {
+				this.connection = connection;
+			}.bind(this),
+			connected: function(connection) {
+				this.start(connection);
+				callback();
+			}.bind(this),
+			errored : function(errors) {
+				console.error('Connection errors: ' + errors);
 				callback();
 			}.bind(this)
 		});

@@ -5,7 +5,7 @@ var Class = godsend.Class;
 var uuid = require('uuid');
 
 Example = Class.extend({
-
+	
 	initialize: function(properties) {
 		
 		new basic.Server().start(function() {
@@ -62,7 +62,7 @@ Example = Class.extend({
 Agent = Class.extend({
 
 	initialize: function(properties) {
-
+		
 		Object.assign(this, properties);
 		this.storage = {};
 	},
@@ -76,17 +76,23 @@ Agent = Class.extend({
 				username: basic.Credentials.get('agent').username,
 				passphrase: basic.Credentials.get('agent').passphrase,
 			},
-			responded: function(result) {
-				this.connection = result.connection;
-				this.process();
+			initialized : function(connection) {
+				this.process(connection);
+			}.bind(this),
+			connected: function(connection) {
+				this.connection = connection;
 				callback();
+			}.bind(this),
+			errored : function(errors) {
+				console.error('Connection errors: ' + errors);
+				callback(errors);
 			}.bind(this)
 		});
 	},
 
-	process: function() {
+	process: function(connection) {
 
-		this.connection.process({
+		connection.process({
 			id: 'store-all-tasks',
 			on: function(request) {
 				request.accept({
@@ -117,7 +123,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 
-		this.connection.process({
+		connection.process({
 			id: 'store-put',
 			cache: false,
 			on: function(request) {
@@ -137,7 +143,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 
-		this.connection.process({
+		connection.process({
 			id: 'store-put-tasks-validate',
 			before: 'store-put',
 			on: function(request) {
@@ -160,8 +166,8 @@ Agent = Class.extend({
 				}
 			}.bind(this)
 		});
-
-		this.connection.process({
+		
+		connection.process({
 			id: 'store-put-tasks-transform',
 			before: 'store-put-tasks-validate',
 			on: function(request) {

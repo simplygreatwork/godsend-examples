@@ -4,6 +4,7 @@ var godsend = require('godsend');
 var basic = require('godsend-basics');
 var Class = godsend.Class; 
 var uuid = require('uuid');
+var address = 'https://127.0.0.1:8080/';
 
 Example = Class.extend({
 	
@@ -12,10 +13,12 @@ Example = Class.extend({
 		console.log('Edit key and cert with the paths to your own private key and certificate.');
 		
 		new basic.Server({
+			address : address,
          key: fs.readFileSync('/etc/letsencrypt/live/fullterm.io/privkey.pem'),
          cert: fs.readFileSync('/etc/letsencrypt/live/fullterm.io/fullchain.pem'),
 		}).start(function() {
 			new basic.Authorizer({
+				address : 'https://127.0.0.1:8080/',
 				users: this.users
 			}).connect(function() {
 				new Agent().connect(function() {
@@ -66,15 +69,22 @@ Agent = Class.extend({
 	connect: function(callback) {
 		
 		new godsend.Bus({
-			address: 'http://127.0.0.1:8080/'
+			address : address,
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('agent').username,
 				passphrase: basic.Credentials.get('agent').passphrase,
 			},
-			responded: function(result) {
-				this.process(result.connection);
+			initialized : function(connection) {
+				this.process(connection);
+			}.bind(this),
+			connected: function(connection) {
+				this.connection = connection;
 				callback();
+			}.bind(this),
+			errored : function(errors) {
+				console.error('Connection errors: ' + errors);
+				callback(errors);
 			}.bind(this)
 		});
 	},
@@ -103,15 +113,22 @@ Sender = Class.extend({
 	connect: function(callback) {
 		
 		new Bus({
-			address: 'http://127.0.0.1:8080'
+			address : address,
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('sender').username,
 				passphrase: basic.Credentials.get('sender').passphrase,
 			},
-			responded: function(result) {
-				this.start(result.connection);
+			initialized : function(connection) {
+				this.connection = connection;
+			}.bind(this),
+			connected: function(connection) {
+				this.start(connection);
 				callback();
+			}.bind(this),
+			errored : function(errors) {
+				console.error('Connection errors: ' + errors);
+				callback(errors);
 			}.bind(this)
 		});
 	},

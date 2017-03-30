@@ -18,15 +18,22 @@ Client = Class.extend({
 Sender = Class.extend({
 	
 	connect: function(callback) {
-
+		
 		this.bus.connect({
 			credentials: {
 				username: Credentials.get('client').username,
 				passphrase: Credentials.get('client').passphrase,
 			},
-			responded: function(result) {
-				this.connection = result.connection;
+			initialized : function(connection) {
+				this.connection = connection;
+			}.bind(this),
+			connected: function(connection) {
+				this.connection = connection;
 				callback();
+			}.bind(this),
+			errored : function(errors) {
+				console.error('Connection errors: ' + errors);
+				callback(errors);
 			}.bind(this)
 		});
 	},

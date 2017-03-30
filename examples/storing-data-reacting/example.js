@@ -105,9 +105,16 @@ Agent = Class.extend({
 				username: basic.Credentials.get('agent').username,
 				passphrase: basic.Credentials.get('agent').passphrase,
 			},
-			responded: function(result) {
-				this.process(result.connection);
+			initialized : function(connection) {
+				this.process(connection);
+			}.bind(this),
+			connected: function(connection) {
+				this.connection = connection;
 				callback();
+			}.bind(this),
+			errored : function(errors) {
+				console.error('Connection errors: ' + errors);
+				callback(errors);
 			}.bind(this)
 		});
 	},
@@ -194,15 +201,22 @@ Sender = Class.extend({
 				username: basic.Credentials.get('sender').username,
 				passphrase: basic.Credentials.get('sender').passphrase,
 			},
-			responded: function(result) {
-				this.connection = result.connection;
+			initialized : function(connection) {
+				this.connection = connection;
+			}.bind(this),
+			connected: function(connection) {
+				this.connection = connection;
 				callback(this);
+			}.bind(this),
+			errored : function(errors) {
+				console.error('Connection errors: ' + errors);
+				callback(this, errors);
 			}.bind(this)
 		});
 	},
 	
 	start: function() {
-
+		
 		var connection = this.connection;
 		var sequence = godsend.Sequence.start(
 
@@ -265,9 +279,16 @@ Receiver = {
 					username: basic.Credentials.get('task-receiver').username,
 					passphrase: basic.Credentials.get('task-receiver').passphrase,
 				},
-				responded: function(result) {
-					this.process(result.connection);
+				initialized : function(connection) {
+					this.process(connection);
+				}.bind(this),
+				connected: function(connection) {
+					this.connection = connection;
 					callback();
+				}.bind(this),
+				errored : function(errors) {
+					console.error('Connection errors: ' + errors);
+					callback(errors);
 				}.bind(this)
 			});
 		},
@@ -315,9 +336,16 @@ Receiver = {
 					username: basic.Credentials.get('patient-receiver').username,
 					passphrase: basic.Credentials.get('patient-receiver').passphrase,
 				},
-				responded: function(result) {
-					this.process(result.connection);
+				initialized : function(connection) {
+					this.process(connection);
+				}.bind(this),
+				connected: function(connection) {
+					this.connection = connection;
 					callback();
+				}.bind(this),
+				errored : function(errors) {
+					console.error('Connection errors: ' + errors);
+					callback(errors);
 				}.bind(this)
 			});
 		},
