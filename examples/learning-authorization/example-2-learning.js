@@ -100,7 +100,7 @@ Agent = Class.extend({
 	connect: function(callback) {
 
 		new godsend.Bus({
-			address: 'http://127.0.0.1:8080/'
+			address: basic.Utility.address()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('agent').username,
@@ -144,7 +144,7 @@ Sender = Class.extend({
 	connect: function(callback) {
 		
 		new Bus({
-			address: 'http://127.0.0.1:8080'
+			address: basic.Utility.address()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('sender').username,

@@ -11,7 +11,6 @@ Example = Class.extend({
 		new basic.Server().start(function() {
 			new basic.Authorizer({
 				users: this.users,
-				dirname : __dirname
 			}).connect(function() {
 				new Agent().connect(function() {
 					new Client().start(function() {
@@ -99,7 +98,7 @@ Agent = Class.extend({
 	connect: function(callback) {
 		
 		new godsend.Bus({
-			address: 'http://127.0.0.1:8080/'
+			address: basic.Utility.address()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('agent').username,
@@ -173,7 +172,7 @@ Client = Class.extend({
 		
 		new Receiver.Task({
 			bus: this.bus = new Bus({
-				address: 'http://127.0.0.1:8080'
+				address: basic.Utility.address()
 			})
 		}).connect(function() {
 			new Receiver.Patient({
@@ -195,7 +194,7 @@ Sender = Class.extend({
 	connect: function(callback) {
 		
 		new Bus({
-			address: 'http://127.0.0.1:8080'
+			address: basic.Utility.address()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('sender').username,

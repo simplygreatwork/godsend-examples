@@ -1,7 +1,7 @@
 var Bus = godsend.Bus;
 
 Client = Class.extend({
-
+	
 	initialize: function(properties) {
 
 		var sender = new Sender({
@@ -40,7 +40,7 @@ Sender = Class.extend({
 
 	start: function() {
 
-		var sequence = Sequence.start(
+		var sequence = godsend.Sequence.start(
 
 			function() {
 
