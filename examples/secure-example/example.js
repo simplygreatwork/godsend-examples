@@ -4,6 +4,9 @@ var godsend = require('godsend');
 var basic = require('godsend-basics');
 var Class = godsend.Class; 
 var uuid = require('uuid');
+var address = basic.Utility.address({
+	secure : true
+});
 
 Example = Class.extend({
 	
@@ -12,12 +15,12 @@ Example = Class.extend({
 		console.log('Edit key and cert with the paths to your own private key and certificate.');
 		
 		new basic.Server({
-			address : basic.Utility.address(),
+			address : address,
          key: fs.readFileSync('/etc/letsencrypt/live/fullterm.io/privkey.pem'),
          cert: fs.readFileSync('/etc/letsencrypt/live/fullterm.io/fullchain.pem'),
 		}).start(function() {
 			new basic.Authorizer({
-				address: basic.Utility.address(),
+				address: address,
 				users: this.users
 			}).connect(function() {
 				new Agent().connect(function() {
@@ -68,7 +71,7 @@ Agent = Class.extend({
 	connect: function(callback) {
 		
 		new godsend.Bus({
-			address : basic.Utility.address(),
+			address : address,
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('agent').username,
@@ -112,7 +115,7 @@ Sender = Class.extend({
 	connect: function(callback) {
 		
 		new Bus({
-			address : basic.Utility.address(),
+			address : address,
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('sender').username,
