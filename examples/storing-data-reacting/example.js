@@ -98,7 +98,7 @@ Agent = Class.extend({
 	connect: function(callback) {
 		
 		new godsend.Bus({
-			address: basic.Utility.address()
+			address: basic.Utility.local()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('agent').username,
@@ -172,7 +172,7 @@ Client = Class.extend({
 		
 		new Receiver.Task({
 			bus: this.bus = new Bus({
-				address: basic.Utility.address()
+				address: basic.Utility.local()
 			})
 		}).connect(function() {
 			new Receiver.Patient({
@@ -194,7 +194,7 @@ Sender = Class.extend({
 	connect: function(callback) {
 		
 		new Bus({
-			address: basic.Utility.address()
+			address: basic.Utility.local()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('sender').username,

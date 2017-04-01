@@ -70,7 +70,7 @@ Agent = Class.extend({
 	connect: function(callback) {
 		
 		new godsend.Bus({
-			address: basic.Utility.address()
+			address: basic.Utility.local()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('agent').username,
@@ -142,7 +142,7 @@ Agent = Class.extend({
 				stream.next();
 			}.bind(this)
 		});
-
+		
 		connection.process({
 			id: 'store-put-tasks-validate',
 			before: 'store-put',

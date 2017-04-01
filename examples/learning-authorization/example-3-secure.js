@@ -100,7 +100,7 @@ Agent = Class.extend({
 	connect: function(callback) {
 
 		new godsend.Bus({
-			address: basic.Utility.address()
+			address: basic.Utility.local()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('agent').username,
@@ -124,7 +124,7 @@ Agent = Class.extend({
 		
 		connection.process({
 			id: 'post-message',
-			on: function(request, response) {
+			on: function(request) {
 				request.accept({
 					topic: 'post-message'
 				})
@@ -144,7 +144,7 @@ Sender = Class.extend({
 	connect: function(callback) {
 		
 		new Bus({
-			address: basic.Utility.address()
+			address: basic.Utility.local()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('sender').username,

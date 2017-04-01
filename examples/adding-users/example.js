@@ -66,7 +66,7 @@ Agent = Class.extend({
 	connect: function(callback) {
 		
 		new godsend.Bus({
-			address: basic.Utility.address()
+			address: basic.Utility.local()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('agent').username,
@@ -110,7 +110,7 @@ Administrator = Class.extend({
 	connect: function(callback) {
 		
 		new Bus({
-			address: basic.Utility.address()
+			address: basic.Utility.local()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('administrator').username,

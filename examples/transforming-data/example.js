@@ -59,7 +59,7 @@ Agent = Class.extend({
 	connect: function(callback) {
 		
 		new godsend.Bus({
-			address: basic.Utility.address()
+			address: basic.Utility.local()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('agent').username,
@@ -103,7 +103,7 @@ Sender = Class.extend({
 	connect: function(callback) {
 		
 		new Bus({
-			address: basic.Utility.address()
+			address: basic.Utility.local()
 		}).connect({
 			credentials: {
 				username: basic.Credentials.get('sender').username,
@@ -138,7 +138,7 @@ Sender = Class.extend({
 							stream.write({
 								type: 'object'
 							});
-						}.bind(this), 1000);
+						}.bind(this), 1);
 					}.bind(this),
 					read: function(object) {
 						console.log('result: ' + JSON.stringify(object, null, 2));

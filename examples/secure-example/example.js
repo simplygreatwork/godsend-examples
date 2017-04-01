@@ -4,7 +4,7 @@ var godsend = require('godsend');
 var basic = require('godsend-basics');
 var Class = godsend.Class; 
 var uuid = require('uuid');
-var address = basic.Utility.address({
+var address = basic.Utility.local({
 	secure : true
 });
 
