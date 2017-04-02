@@ -36,7 +36,7 @@ Sender = Class.extend({
 	},
 	
 	start: function() {
-
+		
 		var sequence = basic.Sequence.start(
 
 			function() {
