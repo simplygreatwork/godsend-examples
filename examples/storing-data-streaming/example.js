@@ -3,6 +3,8 @@ var godsend = require('godsend');
 var basic = require('godsend-basics');
 var Class = godsend.Class; 
 var uuid = require('uuid');
+var level = require('level');
+var levelws = require('level-ws');
 
 Example = Class.extend({
 	
@@ -30,8 +32,11 @@ Example = Class.extend({
 			patterns: {
 				sendable: [],
 				receivable: [{
-					topic: 'store',
-					action: 'get'
+					topic : 'store',
+					action : 'put',
+				}, {
+					topic : 'store',
+					action : 'get',
 				}]
 			}
 		},
@@ -42,14 +47,13 @@ Example = Class.extend({
 			},
 			patterns: {
 				sendable: [{
-					topic: 'store',
-					action: 'get',
-					collection: 'tasks'
+					topic : 'store',
+					action : 'put',
+				}, {
+					topic : 'store',
+					action : 'get',
 				}],
 				receivable: []
-			},
-			versions: {
-				'store-get-tasks-transform': 'version-three'
 			}
 		}
 	}
@@ -58,11 +62,12 @@ Example = Class.extend({
 Agent = Class.extend({
 
 	initialize: function(properties) {
-
+		
 		Object.assign(this, properties);
-		this.storage = {};
+		this.database = level('database')
+		this.database = levelws(this.database);
 	},
-
+	
 	connect: function(callback) {
 		
 		new godsend.Bus({
@@ -80,86 +85,54 @@ Agent = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback();
 			}.bind(this)
 		});
 	},
-
+	
 	process: function(connection) {
+		
+		var storage = [];
+		
+		connection.process({
+			id: 'store-put',
+			on: function(request) {
+				request.accept({
+					topic : 'store',
+					action: 'put'
+				});
+			}.bind(this),
+			run: function(stream) {
+				if (! this.stream) this.writestream = this.database.createWriteStream();
+				stream.object.value = JSON.stringify(stream.object.value);
+				this.writestream.write(stream.object);
+				stream.next();
+			}.bind(this),
+			ending : function(stream) {
+				if (this.stream) this.stream.end();
+				stream.push({
+					end: true
+				});
+				stream.next();
+			}
+		});
 		
 		connection.process({
 			id: 'store-get',
-			cache: false,
 			on: function(request) {
 				request.accept({
-					topic: 'store',
-					action: 'get',
-					collection: 'tasks'
+					topic : 'store',
+					action: 'get'
 				});
 			}.bind(this),
 			run: function(stream) {
-				console.log('Getting the task.');
-				stream.push({
-					title: 'Untitled Task',
-					done: false
-				});
-				stream.next();
-			}.bind(this)
-		});
-		
-		connection.process({
-			id: 'store-get-tasks-transform',
-			after: 'store-get',
-			on: function(request) {
-				request.accept({
-					topic: 'store',
-					action: 'get',
-					collection: 'tasks'
-				});
-			}.bind(this),
-			run: function(stream) {
-				console.log('Transforming the task. (unversioned)');
-				stream.push(stream.object);
-				stream.next();
-			}.bind(this)
-		});
-		
-		connection.process({
-			id: 'store-get-tasks-transform',
-			version: {
-				name: 'version-two',
-				'default': true
-			},
-			after: 'store-get',
-			on: function(request) {
-				request.accept({
-					topic: 'store',
-					action: 'get',
-					collection: 'tasks'
-				});
-			}.bind(this),
-			run: function(stream) {
-				console.log('Transforming the task. (v2 : default)');
-				stream.push(stream.object);
-				stream.next();
-			}.bind(this)
-		});
-		
-		connection.process({
-			id: 'store-get-tasks-transform',
-			version: 'version-three',
-			after: 'store-get',
-			on: function(request) {
-				request.accept({
-					topic: 'store',
-					action: 'get',
-					collection: 'tasks'
-				});
-			}.bind(this),
-			run: function(stream) {
-				console.log('Transforming the task. (v3)');
-				stream.push(stream.object);
+				var readstream = this.database.createReadStream();
+				readstream.on('readable', function() {
+					var data = readstream.read();
+					var object = JSON.parse(JSON.stringify(data));
+					stream.push(object);
+				}.bind(this));
 				stream.next();
 			}.bind(this)
 		});
@@ -185,31 +158,74 @@ Sender = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback();
 			}.bind(this)
 		});
 	},
-
+	
 	start: function(connection) {
 		
 		var sequence = basic.Sequence.start(
-
+			
+			function() {
+				
+				var counter = 0;
+				connection.send({
+					pattern: {
+						topic : 'store',
+						action: 'put'
+					},
+					write: function(stream) {
+						var id = setInterval(function() {
+							counter++;
+							if (counter < 3) {
+								if (Math.random() > 0.5) {
+									stream.write({
+										key: uuid(),
+										value : {
+											boolean : true
+										}
+									});
+								} else {
+									stream.write({
+										key: uuid(),
+										value : {
+											boolean : false
+										}
+									});
+								}
+							} else {
+								stream.end();
+								clearTimeout(id);
+							}
+						}.bind(this), 1);
+					}.bind(this),
+					receive: function(result) {
+						console.log('put result: ' + JSON.stringify(result, null, 2));
+						sequence.next();
+					}
+				});
+				
+			}.bind(this),
+			
 			function() {
 				
 				connection.send({
 					pattern: {
-						topic: 'store',
-						action: 'get',
-						collection: 'tasks'
+						topic : 'store',
+						action: 'get'
 					},
-					data: {
-						key: uuid.v4()
+					data : {
+						all : true
+					},
+					read: function(object) {
+						console.log('one get object: ' + JSON.stringify(object, null, 2));
 					},
 					receive: function(result) {
-						console.log('result: ' + JSON.stringify(result.objects, null, 2));
+						console.log('all get results: ' + JSON.stringify(result, null, 2));
 						sequence.next();
-					}.bind(this)
+					}
 				});
 				
 			}.bind(this),
@@ -220,7 +236,7 @@ Sender = Class.extend({
 				process.exit(0);
 				
 			}.bind(this)
-
+			
 		);
 	}
 });

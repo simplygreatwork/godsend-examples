@@ -1,25 +1,22 @@
-var Bus = godsend.Bus;
 
 Client = Class.extend({
 	
 	initialize: function(properties) {
-
-		var sender = new Sender({
-			bus: new Bus({
-				address: window.location.host
-			})
-		})
-		sender.connect(function() {
+		
+		new Sender().connect(function(sender) {
 			sender.start();
-		}.bind(this));
+			console.log('The example has started.');
+		});
 	}
 });
 
 Sender = Class.extend({
 	
-	connect: function(callback) {
+	connect : function(callback) {
 		
-		this.bus.connect({
+		new godsend.Bus({
+			address: window.location.host
+		}).connect({
 			credentials: {
 				username: Credentials.get('client').username,
 				passphrase: Credentials.get('client').passphrase,
@@ -29,18 +26,18 @@ Sender = Class.extend({
 			}.bind(this),
 			connected: function(connection) {
 				this.connection = connection;
-				callback();
+				callback(this);
 			}.bind(this),
 			errored : function(errors) {
 				console.error('Connection errors: ' + errors);
-				callback(errors);
+				callback(this);
 			}.bind(this)
 		});
 	},
-
+	
 	start: function() {
 
-		var sequence = godsend.Sequence.start(
+		var sequence = basic.Sequence.start(
 
 			function() {
 
@@ -131,7 +128,7 @@ Sender = Class.extend({
 				});
 
 			}.bind(this),
-
+			
 			function() {
 
 				this.connection.send({
@@ -154,9 +151,15 @@ Sender = Class.extend({
 						sequence.next();
 					}.bind(this)
 				});
-
+				
+			}.bind(this),
+			
+			function() {
+				
+				console.log('The example has finished.');
+				
 			}.bind(this)
-
+			
 		);
 	}
 });

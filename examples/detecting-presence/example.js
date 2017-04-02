@@ -14,7 +14,7 @@ Example = Class.extend({
 			}).connect(function() {
 				new Agent().connect(function() {
 					new Sender().connect(function() {
-						console.log('Everything has been started.');
+						console.log('The example has started.');
 					});
 				}.bind(this));
 			});
@@ -139,7 +139,7 @@ Sender = Class.extend({
 	
 	connect: function(callback) {
 		
-		new Bus({
+		new godsend.Bus({
 			address: basic.Utility.local()
 		}).connect({
 			credentials: {
@@ -162,7 +162,7 @@ Sender = Class.extend({
 	
 	start: function(connection) {
 		
-		var sequence = godsend.Sequence.start(
+		var sequence = basic.Sequence.start(
 			
 			function() {
 				
@@ -194,6 +194,13 @@ Sender = Class.extend({
 						sequence.next();
 					}.bind(this)
 				});
+				
+			}.bind(this),
+			
+			function() {
+				
+				console.log('The example has finished.');
+				process.exit(0);
 				
 			}.bind(this)
 			

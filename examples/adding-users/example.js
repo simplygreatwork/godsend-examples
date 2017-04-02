@@ -14,7 +14,7 @@ Example = Class.extend({
 			}).connect(function() {
 				new Agent().connect(function() {
 					new Administrator().connect(function() {
-						console.log('Everything has been started.');
+						console.log('The example has started.');
 					});
 				}.bind(this));
 			});
@@ -109,7 +109,7 @@ Administrator = Class.extend({
 	
 	connect: function(callback) {
 		
-		new Bus({
+		new godsend.Bus({
 			address: basic.Utility.local()
 		}).connect({
 			credentials: {
@@ -132,7 +132,7 @@ Administrator = Class.extend({
 	
 	start: function(connection) {
 		
-		var sequence = godsend.Sequence.start(
+		var sequence = basic.Sequence.start(
 			
 			function() {
 				
@@ -197,6 +197,13 @@ Administrator = Class.extend({
 					}.bind(this)
 				});
 
+			}.bind(this),
+			
+			function() {
+				
+				console.log('The example has finished.');
+				process.exit(0);
+				
 			}.bind(this)
 
 		);

@@ -14,7 +14,7 @@ Example = Class.extend({
 			}).connect(function() {
 				new Agent().connect(function() {
 					new Sender().connect(function() {
-						console.log('Everything has been started.');
+						console.log('The example has started.');
 					});
 				}.bind(this));
 			});
@@ -142,6 +142,12 @@ Agent = Class.extend({
 				this.storage[collection][key] = stream.object.value;
 				stream.push(stream.object);
 				stream.next();
+			}.bind(this),
+			ending: function(stream) {
+				stream.push({
+					message : 'Put all of the valid tasks.'
+				});
+				stream.next();
 			}.bind(this)
 		});
 
@@ -159,7 +165,8 @@ Agent = Class.extend({
 				console.log('Validating the task.');
 				if (!stream.object.value.title) {
 					stream.err({
-						message: 'The task is not valid.'
+						message: 'Invalid task',
+						object: stream.object
 					});
 					stream.next();
 				} else {
@@ -195,7 +202,7 @@ Sender = Class.extend({
 	
 	connect: function(callback) {
 		
-		new Bus({
+		new godsend.Bus({
 			address: basic.Utility.local()
 		}).connect({
 			credentials: {
@@ -218,7 +225,7 @@ Sender = Class.extend({
 	
 	start: function(connection) {
 
-		var sequence = godsend.Sequence.start(
+		var sequence = basic.Sequence.start(
 
 			function() {
 
@@ -228,66 +235,37 @@ Sender = Class.extend({
 						action: 'put',
 						collection: 'tasks'
 					},
-					data: {
-						key: uuid.v4(),
-						value: {
-							number: 1
-						}
-					},
+					write: function(stream) {
+						stream.write({
+							key: uuid.v4(),
+							value: {
+								number: 1
+							}
+						});
+						stream.write({
+							key: uuid.v4(),
+							value: {
+								title: 'New Task'
+							}
+						});
+						stream.write({
+							key: uuid.v4(),
+							value: {
+								title: 'Another New Task'
+							}
+						});
+						stream.end();
+					}.bind(this),
 					receive: function(result) {
 						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
-
-			}.bind(this),
-
-			function() {
 				
-				connection.send({
-					pattern: {
-						topic: 'store',
-						action: 'put',
-						collection: 'tasks'
-					},
-					data: {
-						key: uuid.v4(),
-						value: {
-							title: 'New Task'
-						}
-					},
-					receive: function(result) {
-						console.log('result: ' + JSON.stringify(result, null, 2));
-						sequence.next();
-					}.bind(this)
-				});
-
-			}.bind(this),
-
-			function() {
-
-				connection.send({
-					pattern: {
-						topic: 'store',
-						action: 'put',
-						collection: 'tasks'
-					},
-					data: {
-						key: uuid.v4(),
-						value: {
-							title: 'Another New Task'
-						}
-					},
-					receive: function(result) {
-						console.log('result: ' + JSON.stringify(result, null, 2));
-						sequence.next();
-					}.bind(this)
-				});
-
 			}.bind(this),
 			
 			function() {
-
+				
 				connection.send({
 					pattern: {
 						topic: 'store',
@@ -308,8 +286,15 @@ Sender = Class.extend({
 					}.bind(this)
 				});
 
+			}.bind(this),
+			
+			function() {
+				
+				console.log('The example has finished.');
+				process.exit(0);
+				
 			}.bind(this)
-
+			
 		);
 	}
 });
