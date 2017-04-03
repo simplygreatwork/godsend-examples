@@ -20,7 +20,7 @@ Example = Class.extend({
 						console.log('The example has started.');
 					});
 				}.bind(this));
-			});
+			}.bind(this));
 		}.bind(this));
 	},
 	
@@ -91,12 +91,6 @@ Example = Class.extend({
 
 Agent = Class.extend({
 	
-	initialize: function(properties) {
-
-		Object.assign(this, properties);
-		this.storage = {};
-	},
-
 	connect: function(callback) {
 
 		new godsend.Bus({
@@ -114,7 +108,7 @@ Agent = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback(errors);
 			}.bind(this)
 		});
@@ -158,7 +152,7 @@ Sender = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback(errors);
 			}.bind(this)
 		});

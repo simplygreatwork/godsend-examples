@@ -17,7 +17,7 @@ Example = Class.extend({
 						console.log('The example has started.');
 					});
 				}.bind(this));
-			});
+			}.bind(this));
 		}.bind(this));
 	},
 	
@@ -50,11 +50,6 @@ Example = Class.extend({
 });
 
 Agent = Class.extend({
-
-	initialize: function(properties) {
-		
-		Object.assign(this, properties);
-	},
 	
 	connect: function(callback) {
 		
@@ -73,7 +68,7 @@ Agent = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback();
 			}.bind(this)
 		});
@@ -117,7 +112,7 @@ Sender = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback();
 			}.bind(this)
 		});
@@ -134,19 +129,35 @@ Sender = Class.extend({
 						action: 'transform-object'
 					},
 					write: function(stream) {
-						setInterval(function() {
+						var counter = 0;
+						var id = setInterval(function() {
 							stream.write({
 								type: 'object'
 							});
-						}.bind(this), 1);
+							counter++;
+							if (counter > 4) {
+								clearTimeout(id);
+								stream.end();
+							}
+						}.bind(this), 10);
 					}.bind(this),
 					read: function(object) {
-						console.log('result: ' + JSON.stringify(object, null, 2));
+						console.log('transformed object: ' + JSON.stringify(object, null, 2));
+					},
+					receive : function(result) {
+						sequence.next();
 					},
 					error: function(error) {
 						console.log('error: ' + JSON.stringify(error, null, 2));
 					}
 				});
+				
+			}.bind(this),
+			
+			function() {
+				
+				console.log('The example has finished.');
+				process.exit(0);
 				
 			}.bind(this)
 			

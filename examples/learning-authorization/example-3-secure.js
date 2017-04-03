@@ -20,7 +20,7 @@ Example = Class.extend({
 						console.log('The example has started.');
 					});
 				}.bind(this));
-			});
+			}.bind(this));
 		}.bind(this));
 	},
 	
@@ -114,7 +114,7 @@ Agent = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback(errors);
 			}.bind(this)
 		});
@@ -158,7 +158,7 @@ Sender = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback(errors);
 			}.bind(this)
 		});

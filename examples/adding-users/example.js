@@ -17,7 +17,7 @@ Example = Class.extend({
 						console.log('The example has started.');
 					});
 				}.bind(this));
-			});
+			}.bind(this));
 		}.bind(this));
 	},
 	
@@ -57,11 +57,6 @@ Example = Class.extend({
 });
 
 Agent = Class.extend({
-
-	initialize: function(properties) {
-
-		Object.assign(this, properties);
-	},
 	
 	connect: function(callback) {
 		
@@ -80,7 +75,7 @@ Agent = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback();
 			}.bind(this)
 		});
@@ -124,7 +119,7 @@ Administrator = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback();
 			}.bind(this)
 		});
@@ -154,7 +149,7 @@ Administrator = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result.objects));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
@@ -175,13 +170,13 @@ Administrator = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result.objects));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
 
 			}.bind(this),
-
+			
 			function() {
 				
 				connection.send({
@@ -192,7 +187,7 @@ Administrator = Class.extend({
 						message: 'Message from user "new-user".'
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result.objects));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});

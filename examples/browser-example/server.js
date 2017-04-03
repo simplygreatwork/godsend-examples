@@ -15,10 +15,10 @@ Example = Class.extend({
 				new Agent().connect(function() {
 					console.log('Everything has been started.');
 				}.bind(this));
-			});
+			}.bind(this));
 		}.bind(this));
 	},
-
+	
 	users: {
 		'agent': {
 			credentials: {
@@ -60,7 +60,7 @@ Example = Class.extend({
 });
 
 Agent = Class.extend({
-
+	
 	initialize: function(properties) {
 		
 		Object.assign(this, properties);
@@ -84,7 +84,7 @@ Agent = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback(errors);
 			}.bind(this)
 		});
@@ -133,8 +133,8 @@ Agent = Class.extend({
 				});
 			}.bind(this),
 			run: function(stream) {
-				console.log('Putting the task.');
 				var collection = stream.request.pattern.collection;
+				console.log('Putting the object into collection "' + collection + '".');
 				var key = stream.object.key;
 				this.storage[collection] = this.storage[collection] || {};
 				this.storage[collection][key] = stream.object.value;

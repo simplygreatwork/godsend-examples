@@ -17,7 +17,7 @@ Example = Class.extend({
 						console.log('The example has started.');
 					});
 				}.bind(this));
-			});
+			}.bind(this));
 		}.bind(this));
 	},
 	
@@ -112,7 +112,7 @@ Agent = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback(errors);
 			}.bind(this)
 		});
@@ -129,8 +129,8 @@ Agent = Class.extend({
 				});
 			}.bind(this),
 			run: function(stream) {
-				console.log('Putting an object.');
 				var collection = stream.request.pattern.collection;
+				console.log('Putting the object into collection "' + collection + '".');
 				var key = stream.object.key;
 				this.storage[collection] = this.storage[collection] || {};
 				this.storage[collection][key] = stream.object.value;
@@ -208,7 +208,7 @@ Sender = Class.extend({
 				callback(this);
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback(this, errors);
 			}.bind(this)
 		});
@@ -234,7 +234,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('result: ' + JSON.stringify(result.objects, null, 2));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
@@ -256,7 +256,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('result: ' + JSON.stringify(result.objects, null, 2));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
@@ -293,7 +293,7 @@ Receiver = {
 					callback();
 				}.bind(this),
 				errored : function(errors) {
-					console.error('Connection errors: ' + errors);
+					console.error('connection errors: ' + errors);
 					callback(errors);
 				}.bind(this)
 			});
@@ -350,7 +350,7 @@ Receiver = {
 					callback();
 				}.bind(this),
 				errored : function(errors) {
-					console.error('Connection errors: ' + errors);
+					console.error('connection errors: ' + errors);
 					callback(errors);
 				}.bind(this)
 			});

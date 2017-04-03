@@ -17,7 +17,7 @@ Example = Class.extend({
 						console.log('The example has started.');
 					});
 				}.bind(this));
-			});
+			}.bind(this));
 		}.bind(this));
 	},
 	
@@ -86,7 +86,7 @@ Agent = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback();
 			}.bind(this)
 		});
@@ -135,8 +135,8 @@ Agent = Class.extend({
 				});
 			}.bind(this),
 			run: function(stream) {
-				console.log('Putting the task.');
 				var collection = stream.request.pattern.collection;
+				console.log('Putting the object into collection "' + collection + '".');
 				var key = stream.object.key;
 				this.storage[collection] = this.storage[collection] || {};
 				this.storage[collection][key] = stream.object.value;
@@ -217,7 +217,7 @@ Sender = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback();
 			}.bind(this)
 		});
@@ -226,9 +226,9 @@ Sender = Class.extend({
 	start: function(connection) {
 
 		var sequence = basic.Sequence.start(
-
+			
 			function() {
-
+				
 				connection.send({
 					pattern: {
 						topic: 'store',

@@ -29,7 +29,7 @@ Sender = Class.extend({
 				callback(this);
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback(this);
 			}.bind(this)
 		});
@@ -40,7 +40,7 @@ Sender = Class.extend({
 		var sequence = basic.Sequence.start(
 
 			function() {
-
+				
 				this.connection.send({
 					pattern: {
 						topic: 'store',

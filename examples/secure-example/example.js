@@ -12,7 +12,7 @@ Example = Class.extend({
 	
 	initialize: function(properties) {
 		
-		console.log('Edit key and cert with the paths to your own private key and certificate.');
+		console.warn('Edit the paths to key and cert with your own private key and certificate.');
 		
 		new basic.Server({
 			address : address,
@@ -28,7 +28,7 @@ Example = Class.extend({
 						console.log('The example has started.');
 					});
 				}.bind(this));
-			});
+			}.bind(this));
 		}.bind(this));
 	},
 	
@@ -61,13 +61,7 @@ Example = Class.extend({
 });
 
 Agent = Class.extend({
-
-	initialize: function(properties) {
-
-		Object.assign(this, properties);
-		this.storage = {};
-	},
-
+	
 	connect: function(callback) {
 		
 		new godsend.Bus({
@@ -85,7 +79,7 @@ Agent = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback(errors);
 			}.bind(this)
 		});
@@ -129,7 +123,7 @@ Sender = Class.extend({
 				callback();
 			}.bind(this),
 			errored : function(errors) {
-				console.error('Connection errors: ' + errors);
+				console.error('connection errors: ' + errors);
 				callback(errors);
 			}.bind(this)
 		});
@@ -149,7 +143,7 @@ Sender = Class.extend({
 						message: 'Message'
 					},
 					receive: function(result) {
-						console.log('result: ' + JSON.stringify(result.objects));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});

@@ -19,7 +19,7 @@ Example = Class.extend({
 						console.log('The example has started.');
 					});
 				}.bind(this));
-			});
+			}.bind(this));
 		}.bind(this));
 	},
 	
@@ -170,31 +170,22 @@ Sender = Class.extend({
 			
 			function() {
 				
-				var counter = 0;
 				connection.send({
 					pattern: {
 						topic : 'store',
 						action: 'put'
 					},
 					write: function(stream) {
+						var counter = 0;
 						var id = setInterval(function() {
 							counter++;
 							if (counter < 3) {
-								if (Math.random() > 0.5) {
-									stream.write({
-										key: uuid(),
-										value : {
-											boolean : true
-										}
-									});
-								} else {
-									stream.write({
-										key: uuid(),
-										value : {
-											boolean : false
-										}
-									});
-								}
+								stream.write({
+									key: uuid(),
+									value : {
+										boolean : Math.random() > 0.5 ? true : false
+									}
+								});
 							} else {
 								stream.end();
 								clearTimeout(id);
