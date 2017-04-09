@@ -12,7 +12,7 @@ Example = Class.extend({
 	
 	initialize: function(properties) {
 		
-		console.warn('Edit the paths to key and cert with your own private key and certificate.');
+		console.warn('Edit the paths to key and cert with your own private TLS key and certificate.');
 		
 		new basic.Server({
 			address : address,
