@@ -104,13 +104,13 @@ Agent = Class.extend({
 				});
 			}.bind(this),
 			run: function(stream) {
-				if (! this.stream) this.writestream = this.database.createWriteStream();
+				stream.request.writeStream = stream.request.writeStream || this.database.createWriteStream();
 				stream.object.value = JSON.stringify(stream.object.value);
-				this.writestream.write(stream.object);
+				stream.request.writeStream.write(stream.object);
 				stream.next();
 			}.bind(this),
 			ending : function(stream) {
-				if (this.stream) this.stream.end();
+				if (stream.request.writeStream) stream.request.writeStream.end();
 				stream.push({
 					end: true
 				});
