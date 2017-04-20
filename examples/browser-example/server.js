@@ -12,9 +12,8 @@ Example = Class.extend({
 			new basic.Authorizer({
 				users: this.users
 			}).connect(function() {
-				new Agent().connect(function() {
-					console.log('Everything has been started.');
-				}.bind(this));
+				new Agent().start();
+				console.log('Everything has been started.');
 			}.bind(this));
 		}.bind(this));
 	},
@@ -67,31 +66,16 @@ Agent = Class.extend({
 		this.storage = {};
 	},
 
-	connect: function(callback) {
+	start: function(callback) {
 		
-		new godsend.Bus({
-			address: basic.Utility.local()
-		}).connect({
+		var connection = godsend.connect({
+			address: basic.Utility.local(),
 			credentials: {
 				username: basic.Credentials.get('agent').username,
 				passphrase: basic.Credentials.get('agent').passphrase,
-			},
-			initialized : function(connection) {
-				this.process(connection);
-			}.bind(this),
-			connected: function(connection) {
-				this.connection = connection;
-				callback();
-			}.bind(this),
-			errored : function(errors) {
-				console.error('connection errors: ' + errors);
-				callback(errors);
-			}.bind(this)
+			}
 		});
-	},
-
-	process: function(connection) {
-
+		
 		connection.process({
 			id: 'store-all-tasks',
 			on: function(request) {

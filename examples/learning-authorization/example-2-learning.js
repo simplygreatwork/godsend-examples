@@ -15,11 +15,9 @@ Example = Class.extend({
 			new basic.Authorizer({
 				users: this.users
 			}).connect(function() {
-				new Agent().connect(function() {
-					new Sender().connect(function() {
-						console.log('The example has started.');
-					});
-				}.bind(this));
+				new Agent().start();
+				new Sender().start();
+				console.log('The example has started.');
 			}.bind(this));
 		}.bind(this));
 	},
@@ -91,31 +89,16 @@ Example = Class.extend({
 
 Agent = Class.extend({
 	
-	connect: function(callback) {
-
-		new godsend.Bus({
-			address: basic.Utility.local()
-		}).connect({
+	start: function(callback) {
+		
+		var connection = godsend.connect({
+			address: basic.Utility.local(),
 			credentials: {
 				username: basic.Credentials.get('agent').username,
 				passphrase: basic.Credentials.get('agent').passphrase,
-			},
-			initialized : function(connection) {
-				this.process(connection);
-			}.bind(this),
-			connected: function(connection) {
-				this.connection = connection;
-				callback();
-			}.bind(this),
-			errored : function(errors) {
-				console.error('connection errors: ' + errors);
-				callback(errors);
-			}.bind(this)
+			}
 		});
-	},
-
-	process: function(connection) {
-
+		
 		connection.process({
 			id: 'post-message',
 			on: function(request) {
@@ -130,35 +113,21 @@ Agent = Class.extend({
 				stream.next();
 			}.bind(this)
 		});
+		
 	}
 });
 
 Sender = Class.extend({
 	
-	connect: function(callback) {
+	start: function(callback) {
 		
-		new godsend.Bus({
-			address: basic.Utility.local()
-		}).connect({
+		var connection = godsend.connect({
+			address: basic.Utility.local(),
 			credentials: {
 				username: basic.Credentials.get('sender').username,
 				passphrase: basic.Credentials.get('sender').passphrase,
-			},
-			initialized : function(connection) {
-				this.connection = connection;
-			}.bind(this),
-			connected: function(connection) {
-				this.start(connection);
-				callback();
-			}.bind(this),
-			errored : function(errors) {
-				console.error('connection errors: ' + errors);
-				callback(errors);
-			}.bind(this)
+			}
 		});
-	},
-	
-	start: function(connection) {
 		
 		var sequence = basic.Sequence.start(
 			
@@ -181,8 +150,10 @@ Sender = Class.extend({
 			
 			function() {
 				
-				console.log('The example has finished.');
-				process.exit(0);
+				setTimeout(function() {
+					console.log('The example has finished.');
+					process.exit(0);
+				}.bind(this), 500);
 				
 			}.bind(this)
 

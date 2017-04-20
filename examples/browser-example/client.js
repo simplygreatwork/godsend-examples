@@ -3,45 +3,28 @@ Client = Class.extend({
 	
 	initialize: function(properties) {
 		
-		new Sender().connect(function(sender) {
-			sender.start();
-			console.log('The example has started.');
-		});
+		new Sender().start();
+		console.log('The example has started.');
 	}
 });
 
 Sender = Class.extend({
 	
-	connect : function(callback) {
+	start : function() {
 		
-		new godsend.Bus({
-			address: window.location.host
-		}).connect({
+		var connection = godsend.connect({
+			address: window.location.host,
 			credentials: {
 				username: Credentials.get('client').username,
 				passphrase: Credentials.get('client').passphrase,
-			},
-			initialized : function(connection) {
-				this.connection = connection;
-			}.bind(this),
-			connected: function(connection) {
-				this.connection = connection;
-				callback(this);
-			}.bind(this),
-			errored : function(errors) {
-				console.error('connection errors: ' + errors);
-				callback(this);
-			}.bind(this)
+			}
 		});
-	},
-	
-	start: function() {
 		
 		var sequence = basic.Sequence.start(
-
+			
 			function() {
 				
-				this.connection.send({
+				connection.send({
 					pattern: {
 						topic: 'store',
 						action: 'put',
@@ -63,7 +46,7 @@ Sender = Class.extend({
 
 			function() {
 
-				this.connection.send({
+				connection.send({
 					pattern: {
 						topic: 'store',
 						action: 'put',
@@ -85,7 +68,7 @@ Sender = Class.extend({
 
 			function() {
 
-				this.connection.send({
+				connection.send({
 					pattern: {
 						topic: 'store',
 						action: 'put',
@@ -107,7 +90,7 @@ Sender = Class.extend({
 
 			function() {
 
-				this.connection.send({
+				connection.send({
 					pattern: {
 						topic: 'store',
 						action: 'all',
@@ -131,7 +114,7 @@ Sender = Class.extend({
 			
 			function() {
 
-				this.connection.send({
+				connection.send({
 					pattern: {
 						topic: 'store',
 						action: 'all',

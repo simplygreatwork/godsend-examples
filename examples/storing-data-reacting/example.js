@@ -12,11 +12,11 @@ Example = Class.extend({
 			new basic.Authorizer({
 				users: this.users,
 			}).connect(function() {
-				new Agent().connect(function() {
-					new Client().start(function() {
-						console.log('The example has started.');
-					});
-				}.bind(this));
+				new Agent().start();
+				new Receiver.Task().start();
+				new Receiver.Patient().start();
+				new Sender().start();
+				console.log('The example has started.');
 			}.bind(this));
 		}.bind(this));
 	},
@@ -95,31 +95,16 @@ Agent = Class.extend({
 		this.storage = {};
 	},
 
-	connect: function(callback) {
+	start: function(callback) {
 		
-		new godsend.Bus({
-			address: basic.Utility.local()
-		}).connect({
+		var connection = godsend.connect({
+			address: basic.Utility.local(),
 			credentials: {
 				username: basic.Credentials.get('agent').username,
 				passphrase: basic.Credentials.get('agent').passphrase,
-			},
-			initialized : function(connection) {
-				this.process(connection);
-			}.bind(this),
-			connected: function(connection) {
-				this.connection = connection;
-				callback();
-			}.bind(this),
-			errored : function(errors) {
-				console.error('connection errors: ' + errors);
-				callback(errors);
-			}.bind(this)
+			}
 		});
-	},
-	
-	process: function(connection) {
-
+		
 		connection.process({
 			id: 'store-put',
 			on: function(request) {
@@ -166,57 +151,18 @@ Agent = Class.extend({
 	}
 });
 
-Client = Class.extend({
-	
-	start : function(callback) {
-		
-		new Receiver.Task({
-			bus: this.bus = new godsend.Bus({
-				address: basic.Utility.local()
-			})
-		}).connect(function() {
-			new Receiver.Patient({
-				bus: this.bus
-			}).connect(function() {
-				new Sender({
-					bus: this.bus
-				}).connect(function(sender) {
-					callback();
-					sender.start();
-				}.bind(this));
-			}.bind(this));
-		}.bind(this));
-	}
-});
-
 Sender = Class.extend({
-	
-	connect: function(callback) {
-		
-		new godsend.Bus({
-			address: basic.Utility.local()
-		}).connect({
-			credentials: {
-				username: basic.Credentials.get('sender').username,
-				passphrase: basic.Credentials.get('sender').passphrase,
-			},
-			initialized : function(connection) {
-				this.connection = connection;
-			}.bind(this),
-			connected: function(connection) {
-				this.connection = connection;
-				callback(this);
-			}.bind(this),
-			errored : function(errors) {
-				console.error('connection errors: ' + errors);
-				callback(this, errors);
-			}.bind(this)
-		});
-	},
 	
 	start: function() {
 		
-		var connection = this.connection;
+		var connection = godsend.connect({
+			address: basic.Utility.local(),
+			credentials: {
+				username: basic.Credentials.get('sender').username,
+				passphrase: basic.Credentials.get('sender').passphrase,
+			}
+		});
+		
 		var sequence = basic.Sequence.start(
 
 			function() {
@@ -265,8 +211,10 @@ Sender = Class.extend({
 			
 			function() {
 				
-				console.log('The example has finished.');
-				process.exit(0);
+				setTimeout(function() {
+					console.log('The example has finished.');
+					process.exit(0);
+				}.bind(this), 500);
 				
 			}.bind(this)
 
@@ -278,29 +226,16 @@ Receiver = {
 
 	Task: Class.extend({
 
-		connect: function(callback) {
+		start: function() {
 			
-			this.bus.connect({
+			var connection = godsend.connect({
+				address: basic.Utility.local(),
 				credentials: {
 					username: basic.Credentials.get('task-receiver').username,
 					passphrase: basic.Credentials.get('task-receiver').passphrase,
-				},
-				initialized : function(connection) {
-					this.process(connection);
-				}.bind(this),
-				connected: function(connection) {
-					this.connection = connection;
-					callback();
-				}.bind(this),
-				errored : function(errors) {
-					console.error('connection errors: ' + errors);
-					callback(errors);
-				}.bind(this)
+				}
 			});
-		},
-
-		process: function(connection) {
-
+			
 			connection.process({
 				id: 'store-put-tasks-notify-task-receiver',
 				on: function(request) {
@@ -334,29 +269,16 @@ Receiver = {
 	}),
 
 	Patient: Class.extend({
-
-		connect: function(callback) {
+		
+		start: function(callback) {
 			
-			this.bus.connect({
+			var connection = godsend.connect({
+				address: basic.Utility.local(),
 				credentials: {
 					username: basic.Credentials.get('patient-receiver').username,
 					passphrase: basic.Credentials.get('patient-receiver').passphrase,
-				},
-				initialized : function(connection) {
-					this.process(connection);
-				}.bind(this),
-				connected: function(connection) {
-					this.connection = connection;
-					callback();
-				}.bind(this),
-				errored : function(errors) {
-					console.error('connection errors: ' + errors);
-					callback(errors);
-				}.bind(this)
+				}
 			});
-		},
-
-		process: function(connection) {
 			
 			connection.process({
 				id: 'store-put-tasks-notify-patient-receiver',

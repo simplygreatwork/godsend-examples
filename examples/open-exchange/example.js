@@ -13,48 +13,35 @@ Example = Class.extend({
 			address : basic.Utility.local(),
 			exchange : new godsend.Exchange.Open()
 		}).start(function() {
-			new Agent().connect(function() {
-				new Sender().connect(function() {
-					console.log('The example has started.');
-				});
-			}.bind(this));
+			new Agent().start();
+			new Sender().start();
+			console.log('The example has started.');
 		}.bind(this));
 	}
 });
 
 Agent = Class.extend({
 	
-	connect: function(callback) {
+	start: function() {
 		
-		new godsend.Bus({
-			address : basic.Utility.local()
-		}).connect({
-			initialized : function(connection) {
-				this.process(connection);
-			}.bind(this),
-			connected: function(connection) {
-				this.connection = connection;
-				callback();
-			}.bind(this),
-			errored : function(errors) {
-				console.error('connection errors: ' + errors);
-				callback(errors);
-			}.bind(this)
+		var connection = godsend.connect({
+			address: basic.Utility.local(),
+			credentials: {
+				username: basic.Credentials.get('agent').username,
+				passphrase: basic.Credentials.get('agent').passphrase,
+			}
 		});
-	},
-
-	process: function(connection) {
-
+		
 		connection.process({
-			id: 'post-message',
+			id: 'send-message',
 			on: function(request) {
 				request.accept({
-					action: 'post-message'
+					action: 'send-message'
 				});
 			}.bind(this),
 			run: function(stream) {
 				stream.push({
-					message: 'Received message from the sender!'
+					message: 'Received a message from the sender!'
 				});
 				stream.next();
 			}.bind(this)
@@ -64,38 +51,23 @@ Agent = Class.extend({
 
 Sender = Class.extend({
 	
-	connect: function(callback) {
+	start: function() {
 		
-		new godsend.Bus({
-			address : basic.Utility.local()
-		}).connect({
+		var connection = godsend.connect({
+			address: basic.Utility.local(),
 			credentials: {
 				username: basic.Credentials.get('sender').username,
 				passphrase: basic.Credentials.get('sender').passphrase,
-			},
-			initialized : function(connection) {
-				this.connection = connection;
-			}.bind(this),
-			connected: function(connection) {
-				this.start(connection);
-				callback();
-			}.bind(this),
-			errored : function(errors) {
-				console.error('connection errors: ' + errors);
-				callback(errors);
-			}.bind(this)
+			}
 		});
-	},
-	
-	start: function(connection) {
-		
+
 		var sequence = basic.Sequence.start(
 			
 			function() {
 				
 				connection.send({
 					pattern: {
-						action: 'post-message'
+						action: 'send-message'
 					},
 					data: {
 						message: 'Message'
@@ -110,8 +82,10 @@ Sender = Class.extend({
 			
 			function() {
 				
-				console.log('The example has finished.');
-				process.exit(0);
+				setTimeout(function() {
+					console.log('The example has finished.');
+					process.exit(0);
+				}.bind(this), 500);
 				
 			}.bind(this)
 		);

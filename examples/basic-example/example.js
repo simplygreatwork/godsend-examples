@@ -1,17 +1,14 @@
+
 var godsend = require('godsend');
 var basic = require('godsend-basics');
-var Class = godsend.Class;
+var Class = godsend.Class; 
 var uuid = require('uuid');
 
 Example = Class.extend({
-
+	
 	initialize: function(properties) {
 		
-		new basic.Server({
-			exchange: new godsend.Exchange.Secure({
-				users: this.users
-			})
-		}).start(function() {
+		new basic.Server().start(function() {
 			new basic.Authorizer({
 				users: this.users
 			}).connect(function() {
@@ -23,65 +20,34 @@ Example = Class.extend({
 	},
 	
 	users: {
-		"broker" : {
-			"credentials" : {
-				"username" : "broker",
-				"passphrase" : "passphrase-to-hash"
+		'agent': {
+			credentials: {
+				username: basic.Credentials.get('agent').username,
+				passphrase: basic.Credentials.get('agent').passphrase,
 			},
-			"patterns" : {
-				"sendable" : [{
-					"topic" : "authentication",
-					"action" : "get-user"
+			patterns: {
+				sendable: [],
+				receivable: [{
+					action: 'send-message',
 				}, {
-					"topic" : "presence",
-					"action" : "online"
+					topic: 'taxer',
+					action: 'calculate'
+				}]
+			}
+		},
+		'sender': {
+			credentials: {
+				username: basic.Credentials.get('sender').username,
+				passphrase: basic.Credentials.get('sender').passphrase,
+			},
+			patterns: {
+				sendable: [{
+					action: 'send-message'
 				}, {
-					"topic" : "presence",
-					"action" : "offline"
+					topic: 'taxer',
+					action: 'calculate'
 				}],
-				"receivable" : [{
-					"topic" : "authentication",
-					"action" : "sign-in"
-				}, {
-					"topic" : "authentication",
-					"action" : "sign-out"
-				}]
-			}
-		},
-		"authenticator" : {
-			"credentials" : {
-				"username" : "authenticator",
-				"passphrase" : "passphrase-to-hash"
-			},
-			"patterns" : {
-				"sendable" : [],
-				"receivable" : [{
-					"topic" : "authentication",
-					"action" : "get-user"
-				}, {
-					"topic" : "authentication",
-					"action" : "put-user"
-				}]
-			}
-		},
-		"agent" : {
-			"credentials" : {
-				"username" : "agent",
-				"passphrase" : "passphrase-to-hash"
-			},
-			"patterns" : {
-				"sendable" : [],
-				"receivable" : []
-			}
-		},
-		"sender" : {
-			"credentials" : {
-				"username" : "sender",
-				"passphrase" : "passphrase-to-hash"
-			},
-			"patterns" : {
-				"sendable" : [],
-				"receivable" : []
+				receivable: []
 			}
 		}
 	}
@@ -90,7 +56,7 @@ Example = Class.extend({
 Agent = Class.extend({
 	
 	start: function() {
-
+		
 		var connection = godsend.connect({
 			address: basic.Utility.local(),
 			credentials: {
@@ -100,15 +66,40 @@ Agent = Class.extend({
 		});
 		
 		connection.process({
-			id: 'post-message',
+			id: 'send-message-authorization',
+			before : 'send-message',
 			on: function(request) {
 				request.accept({
-					topic: 'post-message'
-				})
+					action: 'send-message'
+				});
+			}.bind(this),
+			run: function(stream) {
+				var allow = true;
+				if (Math.random() > 0.5) {
+					allow = false;
+				}
+				if (allow) {
+					stream.push(stream.object);
+					stream.next();
+				} else {
+					stream.err({
+						message: 'Randomly not permitted. Run the example again.'
+					});
+					stream.next();
+				}
+			}.bind(this)
+		});
+		
+		connection.process({
+			id: 'send-message',
+			on: function(request) {
+				request.accept({
+					action: 'send-message'
+				});
 			}.bind(this),
 			run: function(stream) {
 				stream.push({
-					message: 'Received a secure message from the client: ' + JSON.stringify(stream.object)
+					reply : 'You said: ' + stream.object.message
 				});
 				stream.next();
 			}.bind(this)
@@ -119,7 +110,7 @@ Agent = Class.extend({
 Sender = Class.extend({
 	
 	start: function() {
-		
+
 		var connection = godsend.connect({
 			address: basic.Utility.local(),
 			credentials: {
@@ -127,24 +118,24 @@ Sender = Class.extend({
 				passphrase: basic.Credentials.get('sender').passphrase,
 			}
 		});
-		
+
 		var sequence = basic.Sequence.start(
 			
 			function() {
 				
 				connection.send({
 					pattern: {
-						topic: 'post-message'
+						action: 'send-message'
 					},
-					data: {
-						message: 'Can you hear me now?'
+					data : {
+						message : 'hello'
 					},
 					receive: function(result) {
 						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
-
+				
 			}.bind(this),
 			
 			function() {
