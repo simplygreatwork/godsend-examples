@@ -28,10 +28,11 @@ Example = Class.extend({
 			patterns: {
 				sendable: [],
 				receivable: [{
-					action: 'send-message',
+					topic: 'store',
+					action: 'put'
 				}, {
-					topic: 'taxer',
-					action: 'calculate'
+					topic: 'store',
+					action: 'get'
 				}]
 			}
 		},
@@ -42,10 +43,11 @@ Example = Class.extend({
 			},
 			patterns: {
 				sendable: [{
-					action: 'send-message'
+					topic: 'store',
+					action: 'put'
 				}, {
-					topic: 'taxer',
-					action: 'calculate'
+					topic: 'store',
+					action: 'get'
 				}],
 				receivable: []
 			}
@@ -54,6 +56,12 @@ Example = Class.extend({
 });
 
 Agent = Class.extend({
+
+	initialize: function(properties) {
+
+		Object.assign(this, properties);
+		this.storage = {};
+	},
 	
 	start: function() {
 		
@@ -65,44 +73,10 @@ Agent = Class.extend({
 			}
 		});
 		
-		connection.process({
-			id: 'send-message-authorization',
-			before : 'send-message',
-			on: function(request) {
-				request.accept({
-					action: 'send-message'
-				});
-			}.bind(this),
-			run: function(stream) {
-				var allow = true;
-				if (Math.random() > 0.5) {
-					allow = false;
-				}
-				if (allow) {
-					stream.push(stream.object);
-					stream.next();
-				} else {
-					stream.err({
-						message: 'Randomly not permitted. Run the example again.'
-					});
-					stream.next();
-				}
-			}.bind(this)
-		});
-		
-		connection.process({
-			id: 'send-message',
-			on: function(request) {
-				request.accept({
-					action: 'send-message'
-				});
-			}.bind(this),
-			run: function(stream) {
-				stream.push({
-					reply : 'You said: ' + stream.object.message
-				});
-				stream.next();
-			}.bind(this)
+		godsend.mount({
+			service : require('godsend-extras').store.File,
+			options : {},
+			connection : connection
 		});
 	}
 });
@@ -110,7 +84,7 @@ Agent = Class.extend({
 Sender = Class.extend({
 	
 	start: function() {
-
+		
 		var connection = godsend.connect({
 			address: basic.Utility.local(),
 			credentials: {
@@ -118,17 +92,19 @@ Sender = Class.extend({
 				passphrase: basic.Credentials.get('sender').passphrase,
 			}
 		});
-
+		
 		var sequence = basic.Sequence.start(
 			
 			function() {
 				
 				connection.send({
 					pattern: {
-						action: 'send-message'
+						topic: 'store',
+						action: 'put',
+						collection: 'tasks'
 					},
-					data : {
-						message : 'hello'
+					data: {
+						label : 'New Task'
 					},
 					receive: function(result) {
 						console.log('result: ' + JSON.stringify(result, null, 2));
@@ -136,6 +112,23 @@ Sender = Class.extend({
 					}.bind(this)
 				});
 				
+			}.bind(this),
+			
+			function() {
+				
+				connection.send({
+					pattern: {
+						topic: 'store',
+						action: 'find',
+						collection: 'tasks'
+					},
+					data: {},
+					receive: function(result) {
+						console.log('result: ' + JSON.stringify(result, null, 2));
+						sequence.next();
+					}.bind(this)
+				});
+
 			}.bind(this),
 			
 			function() {

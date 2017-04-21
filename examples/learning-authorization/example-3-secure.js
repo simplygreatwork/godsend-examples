@@ -33,6 +33,9 @@ Example = Class.extend({
 					"topic" : "authentication",
 					"action" : "get-user"
 				}, {
+					"topic" : "authentication",
+					"action" : "put-user"
+				}, {
 					"topic" : "presence",
 					"action" : "online"
 				}, {
