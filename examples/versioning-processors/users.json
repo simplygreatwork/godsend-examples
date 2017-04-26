@@ -5,26 +5,34 @@
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [{
-        "topic": "authentication",
-        "action": "get-user"
-      }, {
-        "topic": "authentication",
-        "action": "put-user"
-      }, {
-        "topic": "presence",
-        "action": "online"
-      }, {
-        "topic": "presence",
-        "action": "offline"
-      }],
-      "receivable": [{
-        "topic": "authentication",
-        "action": "sign-in"
-      }, {
-        "topic": "authentication",
-        "action": "sign-out"
-      }]
+      "sendable": [
+        {
+          "topic": "authentication",
+          "action": "get-user"
+        },
+        {
+          "topic": "authentication",
+          "action": "put-user"
+        },
+        {
+          "topic": "presence",
+          "action": "online"
+        },
+        {
+          "topic": "presence",
+          "action": "offline"
+        }
+      ],
+      "receivable": [
+        {
+          "topic": "authentication",
+          "action": "sign-in"
+        },
+        {
+          "topic": "authentication",
+          "action": "sign-out"
+        }
+      ]
     }
   },
   "authenticator": {
@@ -34,13 +42,16 @@
     },
     "patterns": {
       "sendable": [],
-      "receivable": [{
-        "topic": "authentication",
-        "action": "get-user"
-      }, {
-        "topic": "authentication",
-        "action": "put-user"
-      }]
+      "receivable": [
+        {
+          "topic": "authentication",
+          "action": "get-user"
+        },
+        {
+          "topic": "authentication",
+          "action": "put-user"
+        }
+      ]
     }
   },
   "agent": {
@@ -50,10 +61,17 @@
     },
     "patterns": {
       "sendable": [],
-      "receivable": [{
-					"topic": "store",
-					"action": "get"
-      }]
+      "receivable": [
+        {
+          "topic": "store",
+          "action": "get"
+        },
+        {
+          "topic": "store",
+          "action": "get",
+          "collection": "tasks"
+        }
+      ]
     }
   },
   "sender": {
@@ -62,15 +80,17 @@
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [{
-					"topic": "store",
-					"action": "get",
-					"collection": "tasks"
-      }],
+      "sendable": [
+        {
+          "topic": "store",
+          "action": "get",
+          "collection": "tasks"
+        }
+      ],
       "receivable": []
     },
-		"versions": {
-			"store-get-tasks-transform": "version-three"
-		}
+    "versions": {
+      "store-get-tasks-transform": "version-three"
+    }
   }
 }

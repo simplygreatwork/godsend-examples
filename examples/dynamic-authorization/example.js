@@ -8,7 +8,9 @@ Example = Class.extend({
 	
 	initialize: function(properties) {
 		
-		new basic.Server().start(function() {
+		new basic.Server({
+			learn : true
+		}).start(function() {
 			new basic.Authorizer({
 				users: this.users
 			}).connect(function() {

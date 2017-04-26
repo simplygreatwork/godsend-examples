@@ -61,9 +61,11 @@
     },
     "patterns": {
       "sendable": [],
-      "receivable": [{
-			"topic": "post-message"
-      }]
+      "receivable": [
+        {
+          "topic": "post-message"
+        }
+      ]
     }
   },
   "public": {
@@ -72,10 +74,15 @@
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [{
-			"topic": "authentication",
-			"action": "sign-in"
-      }],
+      "sendable": [
+        {
+          "topic": "authentication",
+          "action": "sign-in"
+        },
+        {
+          "topic": "post-message"
+        }
+      ],
       "receivable": []
     }
   },
@@ -85,9 +92,11 @@
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [{
-			"topic": "post-message"
-		}],
+      "sendable": [
+        {
+          "topic": "post-message"
+        }
+      ],
       "receivable": []
     }
   }

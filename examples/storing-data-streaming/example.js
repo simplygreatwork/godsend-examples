@@ -10,7 +10,9 @@ Example = Class.extend({
 	
 	initialize: function(properties) {
 		
-		new basic.Server().start(function() {
+		new basic.Server({
+			learn : true
+		}).start(function() {
 			new basic.Authorizer().connect(function() {
 				new Agent().start();
 				new Sender().start();
