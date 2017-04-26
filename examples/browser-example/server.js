@@ -9,52 +9,11 @@ Example = Class.extend({
 	initialize: function(properties) {
 		
 		new basic.Server().start(function() {
-			new basic.Authorizer({
-				users: this.users
-			}).connect(function() {
+			new basic.Authorizer().connect(function() {
 				new Agent().start();
 				console.log('Everything has been started.');
 			}.bind(this));
 		}.bind(this));
-	},
-	
-	users: {
-		'agent': {
-			credentials: {
-				username: basic.Credentials.get('agent').username,
-				passphrase: basic.Credentials.get('agent').passphrase,
-			},
-			patterns: {
-				sendable: [],
-				receivable: [{
-					topic: 'store',
-					action: 'put',
-					collection: 'tasks'
-				}, {
-					topic: 'store',
-					action: 'all',
-					collection: 'tasks'
-				}]
-			}
-		},
-		'client': {
-			credentials: {
-				username: basic.Credentials.get('client').username,
-				passphrase: basic.Credentials.get('client').passphrase,
-			},
-			patterns: {
-				sendable: [{
-					topic: 'store',
-					action: 'put',
-					collection: 'tasks'
-				}, {
-					topic: 'store',
-					action: 'all',
-					collection: 'tasks'
-				}],
-				receivable: []
-			}
-		}
 	}
 });
 

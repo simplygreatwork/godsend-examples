@@ -9,60 +9,16 @@ Example = Class.extend({
 	
 	initialize: function(properties) {
 		
-		new basic.Server().start(function() {
-			new basic.Authorizer({
-				users: this.users
-			}).connect(function() {
-				new Services({
-					users: this.users
-				}).start();
+		new basic.Server({
+			learn : false
+		}).start(function() {
+			new basic.Authorizer().connect(function() {
+				new Services().start();
 				new Agent().start();
 				new Sender().start();
+				console.log('The example has started.');
 			}.bind(this));
 		}.bind(this));
-	},
-	
-	users: {
-		'services': {
-			credentials: {
-				username: basic.Credentials.get('services').username,
-				passphrase: basic.Credentials.get('services').passphrase,
-			},
-			patterns: {
-				sendable: [],
-				receivable: [{
-					topic: 'taxer',
-					action: 'calculate'
-				}]
-			}
-		},
-		'agent': {
-			credentials: {
-				username: basic.Credentials.get('agent').username,
-				passphrase: basic.Credentials.get('agent').passphrase,
-			},
-			patterns: {
-				sendable: [],
-				receivable: [{
-					action: 'send-message'
-				}]
-			}
-		},
-		'sender': {
-			credentials: {
-				username: basic.Credentials.get('sender').username,
-				passphrase: basic.Credentials.get('sender').passphrase,
-			},
-			patterns: {
-				sendable: [{
-					action: 'send-message'
-				}, {
-					topic: 'taxer',
-					action: 'calculate'
-				}],
-				receivable: []
-			}
-		}
 	}
 });
 
@@ -70,22 +26,6 @@ Services = Class.extend({
 	
 	start: function() {
 		
-		if (false) {
-			var connection = godsend.connect({
-				address: basic.Utility.local(),
-				credentials: {
-					username: basic.Credentials.get('authenticator').username,
-					passphrase: basic.Credentials.get('authenticator').passphrase,
-				}
-			});
-			godsend.mount({
-				service : require('godsend-extras').Authorizer,
-				options : {
-					users : this.users
-				},
-				connection : connection
-			});
-		} 
 		var connection = godsend.connect({
 			address: basic.Utility.local(),
 			credentials: {
@@ -94,23 +34,61 @@ Services = Class.extend({
 			}
 		});
 		godsend.mount({
+			service : require('godsend-extras').Logger,
+			options : {},
+			connection : connection
+		});
+		godsend.mount({
+			service : require('godsend-extras').Encryptor,
+			options : {
+				before : ['store-put-transcribe', 'store-put']
+			},
+			connection : connection
+		}).unmount();
+		var service = godsend.mount({
+			service : require('godsend-extras').Encoder,
+			options : {
+				before : ['store-put-transcribe', 'store-put']
+			},
+			connection : connection
+		});
+		godsend.mount({
+			service : require('godsend-extras').Transcriber,
+			options : {
+				before : 'store-put'
+			},
+			connection : connection
+		});
+		godsend.mount({
 			service : require('godsend-extras').store.Memory,
 			options : {},
 			connection : connection
 		});
 		godsend.mount({
-			service : require('godsend-extras').Transformer,
-			options : {},
-			connection : connection
-		});
-		godsend.mount({
-			service : require('godsend-extras').Notifier,
-			options : {},
+			service : require('godsend-extras').Broadcaster,
+			options : {
+				after : 'store-put'
+			},
 			connection : connection
 		});
 		godsend.mount({
 			service : require('godsend-extras/src/Taxer'),
 			connection : connection
+		});
+		connection.mount({
+			id: 'woot',
+			after : 'store-put-encode',
+			before : 'store-put-decode',
+			on: function(request) {
+				request.accept({
+					topic: 'store',
+					action: 'put'
+				});
+			}.bind(this),
+			run: function(stream) {
+				stream.push(stream.object);
+				stream.next();
+			}.bind(this)
 		});
 	}
 });
@@ -127,52 +105,27 @@ Agent = Class.extend({
 			}
 		});
 		
-		connection.process({
-			id: 'send-message-authorization',
-			before : 'send-message',
+		connection.mount({
+			id: 'store-put-broadcast-tasks',
 			on: function(request) {
 				request.accept({
-					action: 'send-message'
+					topic: 'store',
+					action: 'put-broadcast',
+					collection: 'tasks',
 				});
 			}.bind(this),
 			run: function(stream) {
-				var allow = true;
-				if (Math.random() > 0.5) {
-					allow = false;
-				}
-				if (allow) {
-					stream.push(stream.object);
-					stream.next();
-				} else {
-					stream.err({
-						message: 'Randomly not permitted. Run the example again.'
-					});
-					stream.next();
-				}
-			}.bind(this)
-		});
-		
-		connection.process({
-			id: 'send-message',
-			on: function(request) {
-				request.accept({
-					action: 'send-message'
-				});
-			}.bind(this),
-			run: function(stream) {
-				stream.push({
-					reply : 'You said: ' + stream.object.message
-				});
+				console.log('The agent has been notified about a task put.');
+				stream.push(stream.object);
 				stream.next();
 			}.bind(this)
 		});
-		
 	}
 });
 
 Sender = Class.extend({
 	
-	start: function(callback) {
+	start: function() {
 		
 		var connection = godsend.connect({
 			address: basic.Utility.local(),
@@ -188,11 +141,26 @@ Sender = Class.extend({
 				
 				connection.send({
 					pattern: {
-						action: 'send-message'
+						topic: 'store',
+						action: 'put',
+						collection : 'tasks'
 					},
-					data : {
-						message : 'hello'
-					},
+					data : [{
+						key : uuid.v4(),
+						value : {
+							label : 'Task One'
+						}
+					}, {
+						key : uuid.v4(),
+						value : {
+							label : 'Task Two'
+						}
+					}, {
+						key : uuid.v4(),
+						value : {
+							label : 'Task Three'
+						}
+					}],
 					receive: function(result) {
 						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
@@ -200,12 +168,12 @@ Sender = Class.extend({
 				});
 				
 			}.bind(this),
-			
+
 			function() {
 				
 				connection.send({
 					pattern: {
-						topic: 'taxer',
+						topic: 'taxation',
 						action: 'calculate',
 						state : 'texas'
 					},
@@ -224,7 +192,7 @@ Sender = Class.extend({
 				
 				connection.send({
 					pattern: {
-						topic: 'taxer',
+						topic: 'taxation',
 						action: 'calculate',
 						state : 'texas',
 						city : 'austin'

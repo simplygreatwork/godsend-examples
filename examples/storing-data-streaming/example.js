@@ -11,49 +11,12 @@ Example = Class.extend({
 	initialize: function(properties) {
 		
 		new basic.Server().start(function() {
-			new basic.Authorizer({
-				users: this.users
-			}).connect(function() {
+			new basic.Authorizer().connect(function() {
 				new Agent().start();
 				new Sender().start();
 				console.log('The example has started.');
 			}.bind(this));
 		}.bind(this));
-	},
-	
-	users: {
-		'agent': {
-			credentials: {
-				username: basic.Credentials.get('agent').username,
-				passphrase: basic.Credentials.get('agent').passphrase,
-			},
-			patterns: {
-				sendable: [],
-				receivable: [{
-					topic : 'store',
-					action : 'put',
-				}, {
-					topic : 'store',
-					action : 'get',
-				}]
-			}
-		},
-		'sender': {
-			credentials: {
-				username: basic.Credentials.get('sender').username,
-				passphrase: basic.Credentials.get('sender').passphrase,
-			},
-			patterns: {
-				sendable: [{
-					topic : 'store',
-					action : 'put',
-				}, {
-					topic : 'store',
-					action : 'get',
-				}],
-				receivable: []
-			}
-		}
 	}
 });
 

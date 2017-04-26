@@ -17,33 +17,6 @@ Example = Class.extend({
 				console.log('The example has started.');
 			}.bind(this));
 		}.bind(this));
-	},
-	
-	users: {
-		'agent': {
-			credentials: {
-				username: basic.Credentials.get('agent').username,
-				passphrase: basic.Credentials.get('agent').passphrase,
-			},
-			patterns: {
-				sendable: [],
-				receivable: [{
-					action: 'send-message'
-				}]
-			}
-		},
-		'sender': {
-			credentials: {
-				username: basic.Credentials.get('sender').username,
-				passphrase: basic.Credentials.get('sender').passphrase,
-			},
-			patterns: {
-				sendable: [{
-					action: 'send-message'
-				}],
-				receivable: []
-			}
-		}
 	}
 });
 

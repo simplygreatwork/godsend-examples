@@ -8,55 +8,20 @@ Example = Class.extend({
 	
 	initialize: function(properties) {
 		
-		new basic.Server().start(function() {
-			new basic.Authorizer({
-				users: this.users
-			}).connect(function() {
+		new basic.Server({
+			learn : true
+		}).start(function() {
+			new basic.Authorizer().connect(function() {
 				new Agent().start();
 				new Sender().start();
 				console.log('The example has started.');
 			}.bind(this));
 		}.bind(this));
-	},
-	
-	users: {
-		'agent': {
-			credentials: {
-				username: basic.Credentials.get('agent').username,
-				passphrase: basic.Credentials.get('agent').passphrase,
-			},
-			patterns: {
-				sendable: [],
-				receivable: [{
-					topic: 'store',
-					action: 'put'
-				}, {
-					topic: 'store',
-					action: 'get'
-				}]
-			}
-		},
-		'sender': {
-			credentials: {
-				username: basic.Credentials.get('sender').username,
-				passphrase: basic.Credentials.get('sender').passphrase,
-			},
-			patterns: {
-				sendable: [{
-					topic: 'store',
-					action: 'put'
-				}, {
-					topic: 'store',
-					action: 'get'
-				}],
-				receivable: []
-			}
-		}
 	}
 });
 
 Agent = Class.extend({
-
+	
 	initialize: function(properties) {
 
 		Object.assign(this, properties);
@@ -72,9 +37,8 @@ Agent = Class.extend({
 				passphrase: basic.Credentials.get('agent').passphrase,
 			}
 		});
-		
 		godsend.mount({
-			service : require('godsend-extras').store.File,
+			service : require('godsend-extras').store.Memory,
 			options : {},
 			connection : connection
 		});
@@ -104,7 +68,32 @@ Sender = Class.extend({
 						collection: 'tasks'
 					},
 					data: {
-						label : 'New Task'
+						key : uuid.v4(),
+						value : {
+							label : 'Task One'
+						}
+					},
+					receive: function(result) {
+						console.log('result: ' + JSON.stringify(result, null, 2));
+						sequence.next();
+					}.bind(this)
+				});
+				
+			}.bind(this),
+
+			function() {
+				
+				connection.send({
+					pattern: {
+						topic: 'store',
+						action: 'put',
+						collection: 'tasks'
+					},
+					data: {
+						key : uuid.v4(),
+						value : {
+							label : 'Task Two'
+						}
 					},
 					receive: function(result) {
 						console.log('result: ' + JSON.stringify(result, null, 2));
@@ -122,13 +111,40 @@ Sender = Class.extend({
 						action: 'find',
 						collection: 'tasks'
 					},
-					data: {},
+					data: {
+						limit: 100,
+						fields: {}
+					},
 					receive: function(result) {
 						console.log('result: ' + JSON.stringify(result, null, 2));
+						if (result.objects.length > 0) {
+							this.key = result.objects[0].key;
+						}
 						sequence.next();
 					}.bind(this)
 				});
-
+				
+			}.bind(this),
+			
+			function() {
+				
+				if (this.key) {
+					connection.send({
+						pattern: {
+							topic: 'store',
+							action: 'get',
+							collection: 'tasks'
+						},
+						data: {
+							key : this.key
+						},
+						receive: function(result) {
+							console.log('result: ' + JSON.stringify(result, null, 2));
+							sequence.next();
+						}.bind(this)
+					});
+				}
+				
 			}.bind(this),
 			
 			function() {

@@ -9,9 +9,7 @@ Example = Class.extend({
 	initialize: function(properties) {
 		
 		new basic.Server().start(function() {
-			new basic.Authorizer({
-				users: this.users,
-			}).connect(function() {
+			new basic.Authorizer().connect(function() {
 				new Agent().start();
 				new Receiver.Task().start();
 				new Receiver.Patient().start();

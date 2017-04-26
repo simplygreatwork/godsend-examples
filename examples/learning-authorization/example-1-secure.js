@@ -4,89 +4,20 @@ var Class = godsend.Class;
 var uuid = require('uuid');
 
 Example = Class.extend({
-
+	
 	initialize: function(properties) {
 		
 		new basic.Server({
 			exchange: new godsend.Exchange.Secure({
-				users: this.users
+				users: require('./users.json')
 			})
 		}).start(function() {
-			new basic.Authorizer({
-				users: this.users
-			}).connect(function() {
+			new basic.Authorizer().connect(function() {
 				new Agent().start();
 				new Sender().start();
 				console.log('The example has started.');
 			}.bind(this));
 		}.bind(this));
-	},
-	
-	users: {
-		"broker" : {
-			"credentials" : {
-				"username" : "broker",
-				"passphrase" : "passphrase-to-hash"
-			},
-			"patterns" : {
-				"sendable" : [{
-					"topic" : "authentication",
-					"action" : "get-user"
-				}, {
-					"topic" : "authentication",
-					"action" : "put-user"
-				}, {
-					"topic" : "presence",
-					"action" : "online"
-				}, {
-					"topic" : "presence",
-					"action" : "offline"
-				}],
-				"receivable" : [{
-					"topic" : "authentication",
-					"action" : "sign-in"
-				}, {
-					"topic" : "authentication",
-					"action" : "sign-out"
-				}]
-			}
-		},
-		"authenticator" : {
-			"credentials" : {
-				"username" : "authenticator",
-				"passphrase" : "passphrase-to-hash"
-			},
-			"patterns" : {
-				"sendable" : [],
-				"receivable" : [{
-					"topic" : "authentication",
-					"action" : "get-user"
-				}, {
-					"topic" : "authentication",
-					"action" : "put-user"
-				}]
-			}
-		},
-		"agent" : {
-			"credentials" : {
-				"username" : "agent",
-				"passphrase" : "passphrase-to-hash"
-			},
-			"patterns" : {
-				"sendable" : [],
-				"receivable" : []
-			}
-		},
-		"sender" : {
-			"credentials" : {
-				"username" : "sender",
-				"passphrase" : "passphrase-to-hash"
-			},
-			"patterns" : {
-				"sendable" : [],
-				"receivable" : []
-			}
-		}
 	}
 });
 

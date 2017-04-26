@@ -20,41 +20,13 @@ Example = Class.extend({
          cert: fs.readFileSync('/etc/letsencrypt/live/fullterm.io/fullchain.pem'),
 		}).start(function() {
 			new basic.Authorizer({
-				address: address,
-				users: this.users
+				address: address
 			}).connect(function() {
 				new Agent().start()
 				new Sender().start();
 				console.log('The example has started.');
 			}.bind(this));
 		}.bind(this));
-	},
-	
-	users: {
-		'agent': {
-			credentials: {
-				username: basic.Credentials.get('agent').username,
-				passphrase: basic.Credentials.get('agent').passphrase,
-			},
-			patterns: {
-				sendable: [],
-				receivable: [{
-					topic: 'post-message'
-				}]
-			}
-		},
-		'sender': {
-			credentials: {
-				username: basic.Credentials.get('sender').username,
-				passphrase: basic.Credentials.get('sender').passphrase,
-			},
-			patterns: {
-				sendable: [{
-					topic: 'post-message'
-				}],
-				receivable: []
-			}
-		}
 	}
 });
 
