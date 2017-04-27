@@ -63,33 +63,13 @@
       "sendable": [
         {
           "topic": "store",
-          "action": "put-notify",
-          "collection": "tasks"
-        },
-        {
-          "topic": "store",
-          "action": "put-notify",
-          "collection": "patients"
+          "action": "put-notify"
         }
       ],
       "receivable": [
         {
           "topic": "store",
-          "action": "put-notify"
-        },
-        {
-          "topic": "store",
           "action": "put"
-        },
-        {
-          "topic": "store",
-          "action": "put",
-          "collection": "tasks"
-        },
-        {
-          "topic": "store",
-          "action": "put",
-          "collection": "patients"
         }
       ]
     }
