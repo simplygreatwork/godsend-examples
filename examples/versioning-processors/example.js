@@ -32,7 +32,7 @@ Agent = Class.extend({
 			}
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'store-get',
 			cache: false,
 			on: function(request) {
@@ -52,7 +52,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'store-get-tasks-transform',
 			after: 'store-get',
 			on: function(request) {
@@ -69,7 +69,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'store-get-tasks-transform',
 			version: {
 				name: 'version-two',
@@ -90,7 +90,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'store-get-tasks-transform',
 			version: 'version-three',
 			after: 'store-get',

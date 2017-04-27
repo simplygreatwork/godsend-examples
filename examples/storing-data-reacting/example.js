@@ -9,7 +9,7 @@ Example = Class.extend({
 	initialize: function(properties) {
 		
 		new basic.Server({
-			learn : true
+			learn : false
 		}).start(function() {
 			new basic.Authorizer().connect(function() {
 				new Agent().start();
@@ -105,7 +105,7 @@ Agent = Class.extend({
 			}
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'store-put',
 			on: function(request) {
 				request.accept({
@@ -124,7 +124,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'store-put-notify',
 			after: 'store-put',
 			on: function(request) {
@@ -236,7 +236,7 @@ Receiver = {
 				}
 			});
 			
-			connection.process({
+			connection.mount({
 				id: 'store-put-tasks-notify-task-receiver',
 				on: function(request) {
 					request.accept({
@@ -251,7 +251,7 @@ Receiver = {
 				}.bind(this)
 			});
 
-			connection.process({
+			connection.mount({
 				id: 'store-put-patients-notify-task-receiver',
 				on: function(request) {
 					request.accept({
@@ -280,7 +280,7 @@ Receiver = {
 				}
 			});
 			
-			connection.process({
+			connection.mount({
 				id: 'store-put-tasks-notify-patient-receiver',
 				on: function(request) {
 					request.accept({
@@ -295,7 +295,7 @@ Receiver = {
 				}.bind(this)
 			});
 
-			connection.process({
+			connection.mount({
 				id: 'store-put-patients-notify-patient-receiver',
 				on: function(request) {
 					request.accept({

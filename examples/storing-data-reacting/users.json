@@ -142,7 +142,7 @@
         {
           "topic": "store",
           "action": "put-notify",
-          "collection": "tasks"
+          "collection": "patients"
         }
       ]
     }

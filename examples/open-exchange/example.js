@@ -32,7 +32,7 @@ Agent = Class.extend({
 			}
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'send-message',
 			on: function(request) {
 				request.accept({

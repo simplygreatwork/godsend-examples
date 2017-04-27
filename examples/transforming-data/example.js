@@ -32,7 +32,7 @@ Agent = Class.extend({
 			}
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'transform-object',
 			on: function(request) {
 				request.accept({

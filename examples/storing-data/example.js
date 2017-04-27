@@ -38,7 +38,7 @@ Agent = Class.extend({
 			}
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'store-all-tasks',
 			on: function(request) {
 				request.accept({
@@ -69,7 +69,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'store-put',
 			cache: false,
 			on: function(request) {
@@ -95,7 +95,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 
-		connection.process({
+		connection.mount({
 			id: 'store-put-tasks-validate',
 			before: 'store-put',
 			on: function(request) {
@@ -120,7 +120,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'store-put-tasks-transform',
 			before: 'store-put-tasks-validate',
 			on: function(request) {

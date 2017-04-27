@@ -32,7 +32,7 @@ Agent = Class.extend({
 			}
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'transform-object',
 			on: function(request) {
 				request.accept({
@@ -47,7 +47,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'presence-online',
 			on: function(request) {
 				request.accept({
@@ -61,7 +61,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'presence-offline',
 			on: function(request) {
 				request.accept({

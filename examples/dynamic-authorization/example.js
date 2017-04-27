@@ -34,7 +34,7 @@ Agent = Class.extend({
 			}
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'send-message-authorization',
 			before : 'send-message',
 			on: function(request) {
@@ -59,7 +59,7 @@ Agent = Class.extend({
 			}.bind(this)
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'send-message',
 			on: function(request) {
 				request.accept({

@@ -41,7 +41,7 @@ Agent = Class.extend({
 			}
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'store-put',
 			on: function(request) {
 				request.accept({
@@ -64,7 +64,7 @@ Agent = Class.extend({
 			}
 		});
 		
-		connection.process({
+		connection.mount({
 			id: 'store-get',
 			on: function(request) {
 				request.accept({

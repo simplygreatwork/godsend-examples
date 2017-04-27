@@ -37,7 +37,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result, null, 2));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
@@ -59,7 +59,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result, null, 2));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
@@ -81,7 +81,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result, null, 2));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
@@ -105,7 +105,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result, null, 2));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
@@ -130,7 +130,7 @@ Sender = Class.extend({
 						}
 					},
 					receive: function(result) {
-						console.log('Result: ' + JSON.stringify(result, null, 2));
+						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)
 				});
