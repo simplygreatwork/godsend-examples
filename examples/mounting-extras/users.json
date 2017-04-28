@@ -170,6 +170,17 @@
           "topic": "store",
           "action": "put-broadcast",
           "collection": "tasks"
+        },
+        {
+          "topic": "taxation",
+          "action": "calculate",
+          "state": "texas"
+        },
+        {
+          "topic": "taxation",
+          "action": "calculate",
+          "state": "texas",
+          "city": "austin"
         }
       ]
     }
@@ -216,7 +227,18 @@
           "city": "austin"
         }
       ],
-      "receivable": []
+      "receivable": [
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "log"
+        }
+      ]
     }
   }
 }

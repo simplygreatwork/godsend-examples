@@ -33,50 +33,34 @@ Services = Class.extend({
 				passphrase: basic.Credentials.get('services').passphrase,
 			}
 		});
-		godsend.mount({
-			service : require('godsend-extras').Logger,
-			options : {},
-			connection : connection
-		});
-		godsend.mount({
-			service : require('godsend-extras').Encryptor,
-			options : {
-				before : ['store-put-transcribe', 'store-put']
-			},
-			connection : connection
-		}).unmount();
-		var service = godsend.mount({
-			service : require('godsend-extras').Encoder,
-			options : {
-				before : ['store-put-transcribe', 'store-put']
-			},
-			connection : connection
-		});
-		godsend.mount({
-			service : require('godsend-extras').Transcriber,
-			options : {
-				before : 'store-put'
-			},
-			connection : connection
-		});
-		godsend.mount({
-			service : require('godsend-extras').store.Memory,
-			options : {},
-			connection : connection
-		});
-		godsend.mount({
-			service : require('godsend-extras').Broadcaster,
-			options : {
-				after : 'store-put'
-			},
-			connection : connection
-		});
-		godsend.mount({
-			service : require('godsend-extras/src/Taxer'),
-			connection : connection
+		connection.mount({
+			service : new (require('godsend-extras/src/Logger'))({}),
 		});
 		connection.mount({
-			id: 'woot',
+			service : new (require('godsend-extras/src/Encoder'))({}),
+		});
+		connection.remount({
+			id : 'store-put-encode',
+			weight : -6
+		});
+		connection.mount({
+			service : new (require('godsend-extras/src/Decoder'))({}),
+		});
+		connection.remount({
+			id : 'store-put-decode',
+			weight : -5
+		});
+		connection.mount({
+			service : new (require('godsend-extras/src/Transcriber'))({}),
+		});
+		connection.mount({
+			service : new (require('godsend-extras/src/store/Memory'))({}),
+		});
+		connection.mount({
+			service : new (require('godsend-extras/src/Broadcaster'))({}),
+		});
+		connection.mount({
+			id: 'inspector',
 			after : 'store-put-encode',
 			before : 'store-put-decode',
 			on: function(request) {
@@ -86,6 +70,7 @@ Services = Class.extend({
 				});
 			}.bind(this),
 			run: function(stream) {
+				if (false) console.log('stream.object: ' + JSON.stringify(stream.object));
 				stream.push(stream.object);
 				stream.next();
 			}.bind(this)
@@ -104,7 +89,9 @@ Agent = Class.extend({
 				passphrase: basic.Credentials.get('agent').passphrase,
 			}
 		});
-		
+		connection.mount({
+			service : new (require('godsend-extras/src/Taxer'))({}),
+		});
 		connection.mount({
 			id: 'store-put-broadcast-tasks',
 			on: function(request) {
@@ -133,6 +120,10 @@ Sender = Class.extend({
 				username: basic.Credentials.get('sender').username,
 				passphrase: basic.Credentials.get('sender').passphrase,
 			}
+		});
+		if (false) connection.mount({
+			route : 'outbound',
+			service : new (require('godsend-extras/src/Encoder'))({}),
 		});
 		
 		var sequence = basic.Sequence.start(
