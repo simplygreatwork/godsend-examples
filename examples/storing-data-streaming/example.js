@@ -8,7 +8,7 @@ var levelws = require('level-ws');
 
 Example = Class.extend({
 	
-	initialize: function(properties) {
+	initialize: function() {
 		
 		new basic.Server({
 			learn : false

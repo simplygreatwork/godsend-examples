@@ -63,13 +63,7 @@
       "sendable": [],
       "receivable": [
         {
-          "topic": "store",
-          "action": "put"
-        },
-        {
-          "topic": "store",
-          "action": "put",
-          "collection": "tasks"
+          "action": "transform"
         }
       ]
     }
@@ -82,13 +76,7 @@
     "patterns": {
       "sendable": [
         {
-          "topic": "store",
-          "action": "put"
-        },
-        {
-          "topic": "store",
-          "action": "put",
-          "collection": "tasks"
+          "action": "transform"
         }
       ],
       "receivable": []

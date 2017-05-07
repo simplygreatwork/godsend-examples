@@ -7,7 +7,7 @@ var uuid = require('uuid');
 
 Example = Class.extend({
 	
-	initialize: function(properties) {
+	initialize: function() {
 		
 		new basic.Server({
 			learn : false
@@ -36,22 +36,29 @@ Agent = Class.extend({
 			service : new (require('godsend-extras/src/Decoder'))({}),
 		});
 		connection.remount({
-			id : 'store-put-decode',
+			id : 'decode',
 			weight : -5
 		});
 		connection.mount({
-			id: 'displayer',
+			id: 'transformer',
+			weight : 0,
 			on: function(request) {
 				request.accept({
-					topic: 'store',
-					action: 'put'
+					action: 'transform'
 				});
 			}.bind(this),
 			run: function(stream) {
-				stream.object.value.date = new Date();
+				stream.object.status = 'This object was encoded, sent, decoded, transformed, encoded, returned, and decoded.';
 				stream.push(stream.object);
 				stream.next();
 			}.bind(this)
+		});
+		connection.mount({
+			service : new (require('godsend-extras/src/Encoder'))({}),
+		});
+		connection.remount({
+			id : 'encode',
+			weight : 5
 		});
 	}
 });
@@ -69,28 +76,37 @@ Sender = Class.extend({
 		});
 		connection.mount({
 			route : 'outbound',
-			service : new (require('godsend-extras/src/Encoder'))({}),
-		});
-		connection.remount({
-			route : 'outbound',
-			id : 'store-put-encode',
-			weight : -1
-		});
-		connection.mount({
-			route : 'outbound',
-			id: 'credentials-filter',
+			id: 'filter-credentials',
 			weight : -2,
 			on: function(request) {
 				request.accept();
 			}.bind(this),
 			run: function(stream) {
 				if (stream.object.credentials) {
-					console.warn('Detected and deleting credentials in an outbound request.');
+					console.warn('Detected and deleted credentials from an outbound request.');
 					delete stream.object.credentials;
 				}
 				stream.push(stream.object);
 				stream.next();
 			}.bind(this)
+		});
+		connection.mount({
+			route : 'outbound',
+			service : new (require('godsend-extras/src/Encoder'))({}),
+		});
+		connection.remount({
+			route : 'outbound',
+			id : 'encode',
+			weight : -1
+		});
+		connection.mount({
+			route : 'inbound',
+			service : new (require('godsend-extras/src/Decoder'))({}),
+		});
+		connection.remount({
+			route : 'inbound',
+			id : 'decode',
+			weight : 1
 		});
 		
 		var sequence = basic.Sequence.start(
@@ -99,15 +115,10 @@ Sender = Class.extend({
 				
 				connection.send({
 					pattern: {
-						topic: 'store',
-						action: 'put',
-						collection : 'tasks'
+						action: 'transform'
 					},
 					data : {
-						key : uuid.v4(),
-						value : {
-							label : 'Task Four'
-						},
+						message : 'This is an object to transform.',
 						credentials : {
 							username : 'username',
 							passphrase : 'passphrase'

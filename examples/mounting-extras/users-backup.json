@@ -201,18 +201,7 @@
           "city": "austin"
         }
       ],
-      "receivable": [
-        {
-          "topic": "store",
-          "action": "put",
-          "collection": "tasks"
-        },
-        {
-          "topic": "store",
-          "action": "put",
-          "collection": "log"
-        }
-      ]
+      "receivable": []
     }
   }
 }

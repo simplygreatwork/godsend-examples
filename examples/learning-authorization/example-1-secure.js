@@ -5,7 +5,7 @@ var uuid = require('uuid');
 
 Example = Class.extend({
 	
-	initialize: function(properties) {
+	initialize: function() {
 		
 		new basic.Server({
 			exchange: new godsend.Exchange.Secure({

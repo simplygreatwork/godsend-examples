@@ -7,7 +7,7 @@ var uuid = require('uuid');
 
 Example = Class.extend({
 	
-	initialize: function(properties) {
+	initialize: function() {
 		
 		new basic.Server({
 			learn : false
@@ -40,14 +40,14 @@ Services = Class.extend({
 			service : new (require('godsend-extras/src/Encoder'))({}),
 		});
 		connection.remount({
-			id : 'store-put-encode',
+			id : 'encode',
 			weight : -6
 		});
 		connection.mount({
 			service : new (require('godsend-extras/src/Decoder'))({}),
 		});
 		connection.remount({
-			id : 'store-put-decode',
+			id : 'decode',
 			weight : -5
 		});
 		connection.mount({
@@ -61,8 +61,8 @@ Services = Class.extend({
 		});
 		connection.mount({
 			id: 'inspector',
-			after : 'store-put-encode',
-			before : 'store-put-decode',
+			after : 'encode',
+			before : 'decode',
 			on: function(request) {
 				request.accept({
 					topic: 'store',

@@ -7,7 +7,7 @@ var uuid = require('uuid');
 
 Example = Class.extend({
 	
-	initialize: function(properties) {
+	initialize: function() {
 		
 		new basic.Server({
 			address : basic.Utility.local(),

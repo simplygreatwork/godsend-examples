@@ -10,7 +10,7 @@ var address = basic.Utility.local({
 
 Example = Class.extend({
 	
-	initialize: function(properties) {
+	initialize: function() {
 		
 		console.warn('Edit the paths to key and cert with your own private TLS key and certificate.');
 		
