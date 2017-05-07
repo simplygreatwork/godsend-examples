@@ -34,21 +34,37 @@ Services = Class.extend({
 			}
 		});
 		connection.mount({
-			service : new (require('godsend-extras/src/Logger'))({}),
-		});
-		connection.mount({
+			route : 'outbound',
 			service : new (require('godsend-extras/src/Encoder'))({}),
 		});
 		connection.remount({
+			route : 'outbound',
 			id : 'encode',
-			weight : -6
+			weight : -1,
+			on : function(request) {
+				request.accept({
+					topic : 'store',
+					action : 'put'
+				});
+			}
 		});
 		connection.mount({
+			route : 'rebound',
 			service : new (require('godsend-extras/src/Decoder'))({}),
 		});
 		connection.remount({
+			route : 'rebound',
 			id : 'decode',
-			weight : -5
+			before : 'request-logger',
+			on : function(request) {
+				request.accept({
+					topic : 'store',
+					action : 'put'
+				});
+			}
+		});
+		connection.mount({
+			service : new (require('godsend-extras/src/Logger'))({}),
 		});
 		connection.mount({
 			service : new (require('godsend-extras/src/Transcriber'))({}),
@@ -61,8 +77,8 @@ Services = Class.extend({
 		});
 		connection.mount({
 			id: 'inspector',
-			after : 'encode',
-			before : 'decode',
+			after : 'decode',
+			before : 'request-logger',
 			on: function(request) {
 				request.accept({
 					topic: 'store',
@@ -121,9 +137,20 @@ Sender = Class.extend({
 				passphrase: basic.Credentials.get('sender').passphrase,
 			}
 		});
-		if (false) connection.mount({
+		connection.mount({
 			route : 'outbound',
 			service : new (require('godsend-extras/src/Encoder'))({}),
+		});
+		connection.remount({
+			route : 'outbound',
+			id : 'encode',
+			weight : -1,
+			on : function(request) {
+				request.accept({
+					topic : 'store',
+					action : 'put'
+				});
+			}
 		});
 		
 		var sequence = basic.Sequence.start(
