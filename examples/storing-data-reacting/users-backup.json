@@ -60,27 +60,18 @@
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [],
-      "receivable": [
-        {
-          "topic": "post-message"
-        }
-      ]
-    }
-  },
-  "public": {
-    "credentials": {
-      "username": "public",
-      "passphrase": "passphrase-to-hash"
-    },
-    "patterns": {
       "sendable": [
         {
-          "topic": "authentication",
-          "action": "sign-in"
+          "topic": "store",
+          "action": "put-notify"
         }
       ],
-      "receivable": []
+      "receivable": [
+        {
+          "topic": "store",
+          "action": "put"
+        }
+      ]
     }
   },
   "sender": {
@@ -91,10 +82,49 @@
     "patterns": {
       "sendable": [
         {
-          "topic": "post-message"
+          "topic": "store",
+          "action": "put",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "patients"
         }
       ],
       "receivable": []
+    }
+  },
+  "task-receiver": {
+    "credentials": {
+      "username": "task-receiver",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [
+        {
+          "topic": "store",
+          "action": "put-notify",
+          "collection": "tasks"
+        }
+      ]
+    }
+  },
+  "patient-receiver": {
+    "credentials": {
+      "username": "patient-receiver",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [
+        {
+          "topic": "store",
+          "action": "put-notify",
+          "collection": "patients"
+        }
+      ]
     }
   }
 }

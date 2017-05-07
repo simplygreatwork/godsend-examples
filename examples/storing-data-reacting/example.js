@@ -54,6 +54,7 @@ Agent = Class.extend({
 				var key = stream.object.key;
 				this.storage[collection] = this.storage[collection] || {};
 				this.storage[collection][key] = stream.object.value;
+				stream.object.put = true;
 				stream.push(stream.object);
 				stream.next();
 			}.bind(this)

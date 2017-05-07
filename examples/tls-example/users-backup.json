@@ -1,0 +1,70 @@
+{
+  "broker": {
+    "credentials": {
+      "username": "broker",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [{
+        "topic": "authentication",
+        "action": "get-user"
+      }, {
+        "topic": "authentication",
+        "action": "put-user"
+      }, {
+        "topic": "presence",
+        "action": "online"
+      }, {
+        "topic": "presence",
+        "action": "offline"
+      }],
+      "receivable": [{
+        "topic": "authentication",
+        "action": "sign-in"
+      }, {
+        "topic": "authentication",
+        "action": "sign-out"
+      }]
+    }
+  },
+  "authenticator": {
+    "credentials": {
+      "username": "authenticator",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [{
+        "topic": "authentication",
+        "action": "get-user"
+      }, {
+        "topic": "authentication",
+        "action": "put-user"
+      }]
+    }
+  },
+  "agent": {
+    "credentials": {
+      "username": "agent",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [{
+        "topic": "post-message"
+      }]
+    }
+  },
+  "sender": {
+    "credentials": {
+      "username": "sender",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [{
+        "topic": "post-message"
+      }],
+      "receivable": []
+    }
+  }
+}

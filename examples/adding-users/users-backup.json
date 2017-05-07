@@ -68,13 +68,21 @@
       ]
     }
   },
-  "public": {
+  "administrator": {
     "credentials": {
-      "username": "public",
+      "username": "administrator",
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
       "sendable": [
+        {
+          "topic": "authentication",
+          "action": "get-user"
+        },
+        {
+          "topic": "authentication",
+          "action": "put-user"
+        },
         {
           "topic": "authentication",
           "action": "sign-in"
@@ -83,9 +91,9 @@
       "receivable": []
     }
   },
-  "sender": {
+  "new-user": {
     "credentials": {
-      "username": "sender",
+      "username": "new-user",
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {

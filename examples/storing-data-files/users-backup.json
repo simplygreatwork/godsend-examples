@@ -63,24 +63,26 @@
       "sendable": [],
       "receivable": [
         {
-          "topic": "post-message"
+          "topic": "store",
+          "action": "find",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "keys",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "get",
+          "collection": "tasks"
         }
       ]
-    }
-  },
-  "public": {
-    "credentials": {
-      "username": "public",
-      "passphrase": "passphrase-to-hash"
-    },
-    "patterns": {
-      "sendable": [
-        {
-          "topic": "authentication",
-          "action": "sign-in"
-        }
-      ],
-      "receivable": []
     }
   },
   "sender": {
@@ -91,7 +93,24 @@
     "patterns": {
       "sendable": [
         {
-          "topic": "post-message"
+          "topic": "store",
+          "action": "put",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "find",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "keys",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "get",
+          "collection": "tasks"
         }
       ],
       "receivable": []

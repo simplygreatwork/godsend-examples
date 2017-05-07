@@ -61,39 +61,32 @@
     },
     "patterns": {
       "sendable": [],
-      "receivable": [
-        {
-          "topic": "post-message"
-        }
-      ]
+      "receivable": [{
+			"topic": "store",
+			"action": "put",
+			"collection": "tasks"
+		}, {
+			"topic": "store",
+			"action": "all",
+			"collection": "tasks"
+      }]
     }
   },
-  "public": {
+  "client": {
     "credentials": {
-      "username": "public",
+      "username": "client",
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [
-        {
-          "topic": "authentication",
-          "action": "sign-in"
-        }
-      ],
-      "receivable": []
-    }
-  },
-  "sender": {
-    "credentials": {
-      "username": "sender",
-      "passphrase": "passphrase-to-hash"
-    },
-    "patterns": {
-      "sendable": [
-        {
-          "topic": "post-message"
-        }
-      ],
+      "sendable": [{
+			"topic": "store",
+			"action": "put",
+			"collection": "tasks"
+		}, {
+			"topic": "store",
+			"action": "all",
+			"collection": "tasks"
+      }],
       "receivable": []
     }
   }
