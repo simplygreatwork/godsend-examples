@@ -152,6 +152,21 @@ Sender = Class.extend({
 				});
 			}
 		});
+		connection.mount({
+			route : 'inbound',
+			id: 'update-gui',
+			on: function(request) {
+				request.accept({
+					topic: 'taxation',
+					action: 'calculate'
+				});
+			}.bind(this),
+			run: function(stream) {
+				console.log('Now, you could update the GUI with the calculated sales tax.');
+				stream.push(stream.object);
+				stream.next();
+			}.bind(this)
+		});
 		
 		var sequence = basic.Sequence.start(
 			

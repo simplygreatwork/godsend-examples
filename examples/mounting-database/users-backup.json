@@ -1,0 +1,207 @@
+{
+  "broker": {
+    "credentials": {
+      "username": "broker",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [
+        {
+          "topic": "authentication",
+          "action": "get-user"
+        },
+        {
+          "topic": "authentication",
+          "action": "put-user"
+        },
+        {
+          "topic": "presence",
+          "action": "online"
+        },
+        {
+          "topic": "presence",
+          "action": "offline"
+        }
+      ],
+      "receivable": [
+        {
+          "topic": "authentication",
+          "action": "sign-in"
+        },
+        {
+          "topic": "authentication",
+          "action": "sign-out"
+        }
+      ]
+    }
+  },
+  "authenticator": {
+    "credentials": {
+      "username": "authenticator",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [
+        {
+          "topic": "authentication",
+          "action": "get-user"
+        },
+        {
+          "topic": "authentication",
+          "action": "put-user"
+        }
+      ]
+    }
+  },
+  "services": {
+    "credentials": {
+      "username": "services",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [
+        {
+          "topic": "store",
+          "action": "put-notify",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "log"
+        },
+        {
+          "topic": "store",
+          "action": "put-notify",
+          "collection": "log"
+        },
+        {
+          "topic": "store",
+          "action": "put-broadcast",
+          "collection": "log"
+        },
+        {
+          "topic": "store",
+          "action": "put-broadcast",
+          "collection": "tasks"
+        }
+      ],
+      "receivable": [
+        {
+          "topic": "presence",
+          "action": "online"
+        },
+        {
+          "topic": "authentication",
+          "action": "get-user"
+        },
+        {
+          "topic": "store",
+          "action": "put-notify",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "put-notify",
+          "collection": "log"
+        },
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "log"
+        },
+        {
+          "topic": "store",
+          "action": "put-broadcast",
+          "collection": "log"
+        },
+        {
+          "topic": "store",
+          "action": "put-broadcast",
+          "collection": "tasks"
+        }
+      ]
+    }
+  },
+  "agent": {
+    "credentials": {
+      "username": "agent",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [
+        {
+          "action": "send-message"
+        },
+        {
+          "topic": "store",
+          "action": "put-broadcast",
+          "collection": "tasks"
+        },
+        {
+          "topic": "taxation",
+          "action": "calculate",
+          "state": "texas"
+        },
+        {
+          "topic": "taxation",
+          "action": "calculate",
+          "state": "texas",
+          "city": "austin"
+        }
+      ]
+    }
+  },
+  "sender": {
+    "credentials": {
+      "username": "sender",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [
+        {
+          "action": "send-message"
+        },
+        {
+          "topic": "taxer",
+          "action": "calculate"
+        },
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "tasks"
+        },
+        {
+          "topic": "taxer",
+          "action": "calculate",
+          "state": "texas"
+        },
+        {
+          "topic": "taxer",
+          "action": "calculate",
+          "state": "texas",
+          "city": "austin"
+        },
+        {
+          "topic": "taxation",
+          "action": "calculate",
+          "state": "texas"
+        },
+        {
+          "topic": "taxation",
+          "action": "calculate",
+          "state": "texas",
+          "city": "austin"
+        }
+      ],
+      "receivable": []
+    }
+  }
+}

@@ -83,7 +83,7 @@ Sender = Class.extend({
 			}.bind(this),
 			run: function(stream) {
 				if (stream.object.credentials) {
-					console.warn('Detected and deleted credentials from an outbound request.');
+					console.warn('Detected and deleted credentials in an outbound request.');
 					delete stream.object.credentials;
 				}
 				stream.push(stream.object);
