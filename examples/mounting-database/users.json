@@ -76,35 +76,6 @@
           "topic": "store",
           "action": "put",
           "collection": "patients"
-        },
-        {
-          "topic": "store",
-          "action": "get",
-          "collection": "tasks",
-          "match": {
-            "done": true
-          },
-          "sort": {
-            "label": true
-          },
-          "reduce": {
-            "offset": 0,
-            "limit": 5
-          },
-          "pluck": {
-            "label": true
-          }
-        },
-        {
-          "topic": "store",
-          "action": "get",
-          "collection": "patients",
-          "match": {
-            "id": "25ad0dc5-2a43-4078-86f7-bc452d5ecd68"
-          },
-          "pluck": {
-            "done": true
-          }
         }
       ]
     }
@@ -129,38 +100,14 @@
         {
           "topic": "store",
           "action": "put",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "get",
           "collection": "patients"
-        },
-        {
-          "topic": "store",
-          "action": "get",
-          "collection": "tasks",
-          "match": {
-            "done": true
-          },
-          "sort": {
-            "label": true
-          },
-          "reduce": {
-            "offset": 0,
-            "limit": 5
-          },
-          "pluck": {
-            "label": true
-          }
-        },
-        {
-          "topic": "store",
-          "action": "get",
-          "collection": "patients",
-          "match": {
-            "id": "25ad0dc5-2a43-4078-86f7-bc452d5ecd68"
-          },
-          "pluck": {
-            "done": true
-          }
         }
-      ],
+     ],
       "receivable": []
     }
   }
