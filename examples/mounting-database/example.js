@@ -32,9 +32,59 @@ Agent = Class.extend({
 				passphrase: basic.Credentials.get('agent').passphrase,
 			}
 		});
-		// the capability to get results is not yet implemented in store/Level
+		
 		connection.mount({
 			service : new (require('godsend-extras/src/store/Level'))({}),
+		});
+		
+		connection.mount({
+			id: 'store-put-tasks-validate',
+			before: 'store-put',
+			on: function(request) {
+				request.accept({
+					topic: 'store',
+					action: 'put',
+					collection: 'tasks'
+				});
+			}.bind(this),
+			run: function(stream) {
+				console.log('Validating the task.');
+				if (!stream.object.value.title) {
+					stream.err({
+						message: 'Invalid task',
+						object: stream.object
+					});
+					stream.next();
+				} else {
+					stream.push(stream.object);
+					stream.next();
+				}
+			}.bind(this)
+		});
+		
+		connection.mount({
+			id: 'store-put-patients-validate',
+			weight: -11,
+			on: function(request) {
+				request.accept({
+					topic: 'store',
+					action: 'put',
+					collection: 'patients'
+				});
+			}.bind(this),
+			run: function(stream) {
+				console.log('Validating the patient.');
+				if (!stream.object.value.name) {
+					stream.err({
+						message: 'Invalid patient',
+						object: stream.object
+					});
+					stream.next();
+				} else {
+					stream.push(stream.object);
+					stream.next();
+				}
+			}.bind(this)
 		});
 	}
 });
@@ -62,19 +112,10 @@ Sender = Class.extend({
 						collection : 'tasks'
 					},
 					data : [{
-						key : uuid.v4(),
+						key : this.key = uuid.v4(),
 						value : {
-							label : 'Task One'
-						}
-					}, {
-						key : uuid.v4(),
-						value : {
-							label : 'Task Two'
-						}
-					}, {
-						key : uuid.v4(),
-						value : {
-							label : 'Task Three'
+							label : 'Task ' + Math.floor(Math.random() * 100),
+							done : Math.random() > 0.5 ? true : false 
 						}
 					}],
 					receive: function(result) {
@@ -84,7 +125,86 @@ Sender = Class.extend({
 				});
 				
 			}.bind(this),
+
+			function() {
+				
+				connection.send({
+					pattern: {
+						topic: 'store',
+						action: 'put',
+						collection : 'patients'
+					},
+					data : [{
+						key : this.key = uuid.v4(),
+						value : {
+							name : 'Patient ' + Math.floor(Math.random() * 100),
+							done : Math.random() > 0.5 ? true : false 
+						}
+					}],
+					receive: function(result) {
+						console.log('result: ' + JSON.stringify(result, null, 2));
+						sequence.next();
+					}.bind(this)
+				});
+				
+			}.bind(this),
+
+			function() {
+				
+				connection.send({
+					pattern: {
+						topic: 'store',
+						action: 'get',
+						collection : 'tasks',
+						match : {
+							done : true
+						},
+						sort : {
+							label : true
+						},
+						reduce : {
+							offset : 0,
+							limit : 5
+						},
+						pluck : {
+							label : true
+						}
+					},
+					data : {},
+					receive: function(result) {
+						console.log('result: ' + JSON.stringify(result, null, 2));
+						console.log('result.objects.length: ' + JSON.stringify(result.objects.length, null, 2));
+						sequence.next();
+					}.bind(this)
+				});
+				
+			}.bind(this),
 			
+			function() {
+				
+				connection.send({			
+					pattern: {
+						topic: 'store',
+						action: 'get',
+						collection : 'patients',
+						match : {
+							id : this.key
+						},
+						pluck : {
+							name : true,
+							done : true
+						}
+					},
+					data : {},
+					receive: function(result) {
+						console.log('result: ' + JSON.stringify(result, null, 2));
+						console.log('result.objects.length: ' + JSON.stringify(result.objects.length, null, 2));
+						sequence.next();
+					}.bind(this)
+				});
+				
+			}.bind(this),
+
 			function() {
 				
 				setTimeout(function() {
