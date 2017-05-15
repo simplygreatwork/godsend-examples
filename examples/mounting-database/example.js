@@ -114,7 +114,7 @@ Sender = Class.extend({
 					data : [{
 						key : this.key = uuid.v4(),
 						value : {
-							label : 'Task ' + Math.floor(Math.random() * 100),
+							title : 'Task ' + Math.floor(Math.random() * 100),
 							done : Math.random() > 0.5 ? true : false 
 						}
 					}],

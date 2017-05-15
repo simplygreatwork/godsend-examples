@@ -69,12 +69,17 @@
         },
         {
           "topic": "store",
+          "action": "put",
+          "collection": "patients"
+        },
+        {
+          "topic": "store",
           "action": "get",
           "collection": "tasks"
         },
         {
           "topic": "store",
-          "action": "put",
+          "action": "get",
           "collection": "patients"
         }
       ]
@@ -94,12 +99,12 @@
         },
         {
           "topic": "store",
-          "action": "get",
-          "collection": "tasks"
+          "action": "put",
+          "collection": "patients"
         },
         {
           "topic": "store",
-          "action": "put",
+          "action": "get",
           "collection": "tasks"
         },
         {
@@ -107,7 +112,7 @@
           "action": "get",
           "collection": "patients"
         }
-     ],
+      ],
       "receivable": []
     }
   }
