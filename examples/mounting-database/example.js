@@ -138,7 +138,7 @@ Sender = Class.extend({
 						key : this.key = uuid.v4(),
 						value : {
 							name : 'Patient ' + Math.floor(Math.random() * 100),
-							done : Math.random() > 0.5 ? true : false 
+							insured : Math.random() > 0.5 ? true : false 
 						}
 					}],
 					receive: function(result) {
@@ -157,7 +157,7 @@ Sender = Class.extend({
 						action: 'get',
 						collection : 'tasks',
 						match : {
-							done : true
+							done : false
 						},
 						sort : {
 							label : true
@@ -167,7 +167,8 @@ Sender = Class.extend({
 							limit : 5
 						},
 						pluck : {
-							label : true
+							title : true,
+							done : true
 						}
 					},
 					data : {},
