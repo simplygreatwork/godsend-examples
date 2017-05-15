@@ -63,10 +63,6 @@
       "sendable": [
         {
           "topic": "store",
-          "action": "put-notify"
-        },
-        {
-          "topic": "store",
           "action": "put-notify",
           "collection": "tasks"
         },
@@ -77,10 +73,6 @@
         }
       ],
       "receivable": [
-        {
-          "topic": "store",
-          "action": "put"
-        },
         {
           "topic": "store",
           "action": "put",

@@ -61,15 +61,18 @@
     },
     "patterns": {
       "sendable": [],
-      "receivable": [{
-			"topic": "store",
-			"action": "put",
-			"collection": "tasks"
-		}, {
-			"topic": "store",
-			"action": "all",
-			"collection": "tasks"
-      }]
+      "receivable": [
+        {
+          "topic": "store",
+          "action": "all",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "tasks"
+        }
+      ]
     }
   },
   "client": {
@@ -78,15 +81,18 @@
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [{
-			"topic": "store",
-			"action": "put",
-			"collection": "tasks"
-		}, {
-			"topic": "store",
-			"action": "all",
-			"collection": "tasks"
-      }],
+      "sendable": [
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "all",
+          "collection": "tasks"
+        }
+      ],
       "receivable": []
     }
   }

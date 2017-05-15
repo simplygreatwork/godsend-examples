@@ -54,8 +54,9 @@ Agent = Class.extend({
 				var key = stream.object.key;
 				this.storage[collection] = this.storage[collection] || {};
 				this.storage[collection][key] = stream.object.value;
-				stream.object.put = true;
-				stream.push(stream.object);
+				stream.push({
+					put : stream.object
+				});
 				stream.next();
 			}.bind(this)
 		});
@@ -183,6 +184,9 @@ Receiver = {
 				}.bind(this),
 				run: function(stream) {
 					console.log('Task receiver was notified that a task was updated.');
+					stream.push({
+						notified : true
+					});
 					stream.next();
 				}.bind(this)
 			});
@@ -242,6 +246,9 @@ Receiver = {
 				}.bind(this),
 				run: function(stream) {
 					console.log('Patient receiver was notified that a patient was updated.');
+					stream.push({
+						notified : true
+					});
 					stream.next();
 				}.bind(this)
 			});

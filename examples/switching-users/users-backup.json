@@ -78,9 +78,6 @@
         {
           "topic": "authentication",
           "action": "sign-in"
-        },
-        {
-          "topic": "post-message"
         }
       ],
       "receivable": []
