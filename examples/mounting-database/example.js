@@ -14,6 +14,7 @@ Example = Class.extend({
 		}).start(function() {
 			new basic.Authorizer().connect(function() {
 				new Agent().start();
+				new Watcher().start();
 				new Sender().start();
 				console.log('The example has started.');
 			}.bind(this));
@@ -32,22 +33,29 @@ Agent = Class.extend({
 				passphrase: basic.Credentials.get('agent').passphrase,
 			}
 		});
-		
+		connection.mount({
+			service : new (require('godsend-extras/src/Logger'))({}),
+		});
+		connection.mount({
+			service : new (require('godsend-extras/src/Transcriber'))({}),
+		});
 		connection.mount({
 			service : new (require('godsend-extras/src/store/Level'))({}),
 		});
-		
+		connection.mount({
+			service : new (require('godsend-extras/src/Broadcaster'))({}),
+		});
 		connection.mount({
 			id: 'store-put-tasks-validate',
 			before: 'store-put',
-			on: function(request) {
+			on: (request) => {
 				request.accept({
 					topic: 'store',
 					action: 'put',
 					collection: 'tasks'
 				});
-			}.bind(this),
-			run: function(stream) {
+			},
+			run: (stream) => {
 				console.log('Validating the task.');
 				if (!stream.object.value.title) {
 					stream.err({
@@ -59,12 +67,12 @@ Agent = Class.extend({
 					stream.push(stream.object);
 					stream.next();
 				}
-			}.bind(this)
+			}
 		});
 		
 		connection.mount({
 			id: 'store-put-patients-validate',
-			weight: -11,
+			before: 'store-put',
 			on: function(request) {
 				request.accept({
 					topic: 'store',
@@ -160,13 +168,14 @@ Sender = Class.extend({
 							done : false
 						},
 						sort : {
-							label : true
+							title : true
 						},
 						reduce : {
 							offset : 0,
 							limit : 5
 						},
 						pluck : {
+							created : true,
 							title : true,
 							done : true
 						}
@@ -192,8 +201,9 @@ Sender = Class.extend({
 							id : this.key
 						},
 						pluck : {
+							created : true,
 							name : true,
-							done : true
+							insured : false
 						}
 					},
 					data : {},
@@ -218,5 +228,38 @@ Sender = Class.extend({
 		);
 	}
 });
+
+Watcher = Class.extend({
+	
+	start: function() {
+		
+		var connection = godsend.connect({
+			address: basic.Utility.local(),
+			credentials: {
+				username: basic.Credentials.get('watcher').username,
+				passphrase: basic.Credentials.get('watcher').passphrase,
+			}
+		});
+		
+		connection.mount({
+			id: 'store-put-patients-broadcast',
+			on: function(request) {
+				request.accept({
+					topic: 'store',
+					action: 'put-broadcast',
+					collection: 'patients'
+				});
+			}.bind(this),
+			run: function(stream) {
+				console.log('The watcher was notified that a patient was put.');
+				stream.push({
+					notified : true
+				});
+				stream.next();
+			}.bind(this)
+		});
+	}
+});
+
 
 new Example();

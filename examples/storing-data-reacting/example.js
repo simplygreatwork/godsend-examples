@@ -62,7 +62,7 @@ Agent = Class.extend({
 		});
 		
 		connection.mount({
-			id: 'store-put-notify',
+			id: 'store-put-broadcast',
 			after: 'store-put',
 			on: function(request) {
 				request.accept({
@@ -74,7 +74,7 @@ Agent = Class.extend({
 				connection.send({
 					pattern: {
 						topic: 'store',
-						action: 'put-notify',
+						action: 'put-broadcast',
 						collection: stream.request.pattern.collection
 					},
 					data: stream.object,
@@ -125,7 +125,7 @@ Sender = Class.extend({
 			}.bind(this),
 
 			function() {
-
+				
 				connection.send({
 					pattern: {
 						topic: 'store',
@@ -174,11 +174,11 @@ Receiver = {
 			});
 			
 			connection.mount({
-				id: 'store-put-tasks-notify-task-receiver',
+				id: 'store-put-tasks-broadcast-task-receiver',
 				on: function(request) {
 					request.accept({
 						topic: 'store',
-						action: 'put-notify',
+						action: 'put-broadcast',
 						collection: 'tasks'
 					});
 				}.bind(this),
@@ -192,11 +192,11 @@ Receiver = {
 			});
 
 			connection.mount({
-				id: 'store-put-patients-notify-task-receiver',
+				id: 'store-put-patients-broadcast-task-receiver',
 				on: function(request) {
 					request.accept({
 						topic: 'store',
-						action: 'put-notify',
+						action: 'put-broadcast',
 						collection: 'patients'
 					});
 				}.bind(this),
@@ -221,11 +221,11 @@ Receiver = {
 			});
 			
 			connection.mount({
-				id: 'store-put-tasks-notify-patient-receiver',
+				id: 'store-put-tasks-broadcast-patient-receiver',
 				on: function(request) {
 					request.accept({
 						topic: 'store',
-						action: 'put-notify',
+						action: 'put-broadcast',
 						collection: 'tasks'
 					});
 				}.bind(this),
@@ -236,11 +236,11 @@ Receiver = {
 			});
 
 			connection.mount({
-				id: 'store-put-patients-notify-patient-receiver',
+				id: 'store-put-patients-broadcast-patient-receiver',
 				on: function(request) {
 					request.accept({
 						topic: 'store',
-						action: 'put-notify',
+						action: 'put-broadcast',
 						collection: 'patients'
 					});
 				}.bind(this),

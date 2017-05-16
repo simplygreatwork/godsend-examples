@@ -60,7 +60,28 @@
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [],
+      "sendable": [
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "log"
+        },
+        {
+          "topic": "store",
+          "action": "put-broadcast",
+          "collection": "tasks"
+        },
+        {
+          "topic": "store",
+          "action": "put-broadcast",
+          "collection": "log"
+        },
+        {
+          "topic": "store",
+          "action": "put-broadcast",
+          "collection": "patients"
+        }
+      ],
       "receivable": [
         {
           "topic": "store",
@@ -81,6 +102,11 @@
           "topic": "store",
           "action": "get",
           "collection": "patients"
+        },
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "log"
         }
       ]
     }
@@ -114,6 +140,22 @@
         }
       ],
       "receivable": []
+    }
+  },
+  "watcher": {
+    "credentials": {
+      "username": "watcher",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [
+        {
+          "topic": "store",
+          "action": "put-broadcast",
+          "collection": "patients"
+        }
+      ]
     }
   }
 }

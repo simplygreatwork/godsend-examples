@@ -76,7 +76,7 @@ Sender = Class.extend({
 								type: 'object'
 							});
 							counter++;
-							if (counter > 4) {
+							if (counter > 400) {
 								clearTimeout(id);
 								stream.end();
 							}
