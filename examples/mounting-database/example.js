@@ -33,18 +33,20 @@ Agent = Class.extend({
 				passphrase: basic.Credentials.get('agent').passphrase,
 			}
 		});
-		connection.mount({
+		
+		connection.install({
 			service : new (require('godsend-extras/src/Logger'))({}),
 		});
-		connection.mount({
-			service : new (require('godsend-extras/src/Transcriber'))({}),
+		connection.install({
+			service : new (require('godsend-extras/src/Registrar'))({}),
 		});
-		connection.mount({
+		connection.install({
 			service : new (require('godsend-extras/src/store/Level'))({}),
 		});
-		connection.mount({
+		connection.install({
 			service : new (require('godsend-extras/src/Broadcaster'))({}),
 		});
+		
 		connection.mount({
 			id: 'store-put-tasks-validate',
 			before: 'store-put',

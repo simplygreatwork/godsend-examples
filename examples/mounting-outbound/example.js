@@ -32,7 +32,7 @@ Agent = Class.extend({
 				passphrase: basic.Credentials.get('agent').passphrase,
 			}
 		});
-		connection.mount({
+		connection.install({
 			service : new (require('godsend-extras/src/Decoder'))({}),
 		});
 		connection.remount({
@@ -53,7 +53,7 @@ Agent = Class.extend({
 				stream.next();
 			}.bind(this)
 		});
-		connection.mount({
+		connection.install({
 			service : new (require('godsend-extras/src/Encoder'))({}),
 		});
 		connection.remount({
@@ -90,7 +90,7 @@ Sender = Class.extend({
 				stream.next();
 			}.bind(this)
 		});
-		connection.mount({
+		connection.install({
 			route : 'outbound',
 			service : new (require('godsend-extras/src/Encoder'))({}),
 		});
@@ -99,7 +99,7 @@ Sender = Class.extend({
 			id : 'encode',
 			weight : -1
 		});
-		connection.mount({
+		connection.install({
 			route : 'inbound',
 			service : new (require('godsend-extras/src/Decoder'))({}),
 		});

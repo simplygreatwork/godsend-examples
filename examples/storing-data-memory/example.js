@@ -37,7 +37,7 @@ Agent = Class.extend({
 				passphrase: basic.Credentials.get('agent').passphrase,
 			}
 		});
-		connection.mount({
+		connection.install({
 			service : new (require('godsend-extras/src/store/Memory'))({}),
 		});
 	}

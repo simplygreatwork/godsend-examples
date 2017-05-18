@@ -33,7 +33,7 @@ Agent = Class.extend({
 			}
 		});
 		
-		connection.mount({
+		connection.install({
 			service : new (require('godsend-extras/src/crypto/Crypto'))({}),
 		});
 		
@@ -72,12 +72,8 @@ Sender = Class.extend({
 			}
 		});
 		
-		connection.mount({
+		connection.install({
 			service : new (require('godsend-extras/src/crypto/Crypto'))({
-				crypto : {
-					key : this.key,
-					iv : this.iv
-				},
 				config : {
 					'encrypt-object' : {
 						route : 'outbound'
@@ -85,6 +81,10 @@ Sender = Class.extend({
 					'decrypt-object' : {
 						route : 'inbound'
 					}
+				},
+				crypto : {
+					key : this.key,
+					iv : this.iv
 				}
 			})
 		});

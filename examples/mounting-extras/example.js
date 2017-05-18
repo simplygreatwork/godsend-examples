@@ -33,7 +33,7 @@ Services = Class.extend({
 				passphrase: basic.Credentials.get('services').passphrase,
 			}
 		});
-		connection.mount({
+		connection.install({
 			route : 'outbound',
 			service : new (require('godsend-extras/src/Encoder'))({}),
 		});
@@ -48,7 +48,7 @@ Services = Class.extend({
 				});
 			}
 		});
-		connection.mount({
+		connection.install({
 			route : 'rebound',
 			service : new (require('godsend-extras/src/Decoder'))({}),
 		});
@@ -63,16 +63,16 @@ Services = Class.extend({
 				});
 			}
 		});
-		connection.mount({
+		connection.install({
 			service : new (require('godsend-extras/src/Logger'))({}),
 		});
-		connection.mount({
-			service : new (require('godsend-extras/src/Transcriber'))({}),
+		connection.install({
+			service : new (require('godsend-extras/src/Registrar'))({}),
 		});
-		connection.mount({
+		connection.install({
 			service : new (require('godsend-extras/src/store/Memory'))({}),
 		});
-		connection.mount({
+		connection.install({
 			service : new (require('godsend-extras/src/Broadcaster'))({}),
 		});
 		connection.mount({
@@ -105,7 +105,7 @@ Agent = Class.extend({
 				passphrase: basic.Credentials.get('agent').passphrase,
 			}
 		});
-		connection.mount({
+		connection.install({
 			service : new (require('godsend-extras/src/Taxer'))({}),
 		});
 		connection.mount({
@@ -137,7 +137,7 @@ Sender = Class.extend({
 				passphrase: basic.Credentials.get('sender').passphrase,
 			}
 		});
-		connection.mount({
+		connection.install({
 			route : 'outbound',
 			service : new (require('godsend-extras/src/Encoder'))({}),
 		});
