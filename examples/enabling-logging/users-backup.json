@@ -61,9 +61,7 @@
     },
     "patterns": {
       "sendable": [],
-      "receivable": [{
-			"action": "send-message"
-      }]
+      "receivable": []
     }
   },
   "sender": {
@@ -72,9 +70,7 @@
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [{
-			"action": "send-message"
-      }],
+      "sendable": [],
       "receivable": []
     }
   }

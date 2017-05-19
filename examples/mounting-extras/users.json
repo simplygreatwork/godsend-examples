@@ -81,18 +81,13 @@
         {
           "topic": "store",
           "action": "put",
-          "collection": "tasks"
+          "collection": "tasks",
+          "encode": true
         },
         {
           "topic": "store",
           "action": "put",
           "collection": "log"
-        },
-        {
-          "topic": "store",
-          "action": "put",
-          "collection": "tasks",
-          "encode": true
         }
       ]
     }
@@ -103,7 +98,13 @@
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [],
+      "sendable": [
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "log"
+        }
+      ],
       "receivable": [
         {
           "topic": "store",
@@ -134,7 +135,8 @@
         {
           "topic": "store",
           "action": "put",
-          "collection": "tasks"
+          "collection": "tasks",
+          "encode": true
         },
         {
           "topic": "taxation",
@@ -146,12 +148,6 @@
           "action": "calculate",
           "state": "texas",
           "city": "austin"
-        },
-        {
-          "topic": "store",
-          "action": "put",
-          "collection": "tasks",
-          "encode": true
         }
       ],
       "receivable": []

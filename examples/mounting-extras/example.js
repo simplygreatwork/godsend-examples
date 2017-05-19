@@ -55,13 +55,25 @@ Services = Class.extend({
 			}),
 		});
 		connection.mount({
-			id: 'inspect',
+			id: 'inspect-encoded',
+			weight : -175,
+			on: function(request) {
+				request.accept();
+			}.bind(this),
+			run: function(stream) {
+				if (false) console.log('encoded: ' + JSON.stringify(stream.object));
+				stream.push(stream.object);
+				stream.next();
+			}.bind(this)
+		});
+		connection.mount({
+			id: 'inspect-decoded',
 			weight : -125,
 			on: function(request) {
 				request.accept();
 			}.bind(this),
 			run: function(stream) {
-				if (false) console.log('unencoded: ' + JSON.stringify(stream.object));
+				if (false) console.log('decoded: ' + JSON.stringify(stream.object));
 				stream.push(stream.object);
 				stream.next();
 			}.bind(this)
@@ -82,6 +94,9 @@ Agent = Class.extend({
 		});
 		connection.install({
 			service : new (require('godsend-extras/src/Taxer'))({}),
+		});
+		connection.install({
+			service : new (require('godsend-extras/src/Logger'))({}),
 		});
 		connection.mount({
 			id: 'store-put-broadcast-tasks',

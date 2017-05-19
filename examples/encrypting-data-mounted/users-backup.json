@@ -63,7 +63,12 @@
       "sendable": [],
       "receivable": [
         {
-          "action": "transform-object"
+          "topic": "crypto",
+          "action": "put-key"
+        },
+        {
+          "action": "send-message",
+          "encryptable": true
         }
       ]
     }
@@ -76,7 +81,12 @@
     "patterns": {
       "sendable": [
         {
-          "action": "transform-object"
+          "topic": "crypto",
+          "action": "put-key"
+        },
+        {
+          "action": "send-message",
+          "encryptable": true
         }
       ],
       "receivable": []

@@ -1,18 +1,19 @@
 
 var godsend = require('godsend');
 var basic = require('godsend-basics');
-var Class = godsend.Class;
+var Class = godsend.Class; 
 var uuid = require('uuid');
-var forge = require('node-forge');
 
 Example = Class.extend({
 	
 	initialize: function() {
 		
 		new basic.Server({
-			learn : true
+			learn : false
 		}).start(function() {
-			new basic.Authorizer().connect(function() {
+			new basic.Authorizer({
+				users: this.users
+			}).connect(function() {
 				new Agent().start();
 				new Sender().start();
 				console.log('The example has started.');
@@ -33,8 +34,20 @@ Agent = Class.extend({
 			}
 		});
 		
+		// connection.mount({
+		// 	id: 'log-message',
+		// 	on: function(request) {
+		// 		request.accept();
+		// 	}.bind(this),
+		// 	run: function(stream) {
+		// 		console.log('logging');
+		// 		stream.push(stream.object);
+		// 		stream.next();
+		// 	}.bind(this)
+		// });
+		
 		connection.install({
-			service : new (require('godsend-extras/src/crypto/Crypto'))({}),
+			service : new (require('godsend-extras/src/Logger'))({}),
 		});
 		
 		connection.mount({
@@ -45,9 +58,9 @@ Agent = Class.extend({
 				});
 			}.bind(this),
 			run: function(stream) {
-				var object = stream.object;
-				object.date = new Date();
-				stream.push(object);
+				stream.push({
+					reply : 'You said: ' + stream.object.message
+				});
 				stream.next();
 			}.bind(this)
 		});
@@ -55,12 +68,6 @@ Agent = Class.extend({
 });
 
 Sender = Class.extend({
-	
-	initialize : function() {
-		
-		this.key = forge.random.getBytesSync(16);
-		this.iv = forge.random.getBytesSync(16);
-	},
 	
 	start: function() {
 		
@@ -72,54 +79,18 @@ Sender = Class.extend({
 			}
 		});
 		
-		connection.install({
-			service : new (require('godsend-extras/src/crypto/Crypto'))({
-				config : {
-					'encrypt-object' : {
-						route : 'outbound'
-					},
-					'decrypt-object' : {
-						route : 'inbound'
-					}
-				},
-				crypto : {
-					key : this.key,
-					iv : this.iv
-				}
-			})
-		});
-		
 		var sequence = basic.Sequence.start(
 			
 			function() {
 				
 				connection.send({
 					pattern: {
-						topic : 'crypto',
-						action: 'put-key'
-					},
-					data : {							// additionally: use a public asymmetric key to encrypt this symmetric key
-						key : this.key,
-						iv : this.iv
-					},
-					receive : function(result) {
-						sequence.next();
-					}.bind(this)
-				});
-				
-			}.bind(this),
-			
-			function() {
-				
-				connection.send({
-					pattern: {
-						action: 'send-message',
-						encryptable : true
+						action: 'send-message'
 					},
 					data : {
-						message : 'Message'
+						message : 'hello'
 					},
-					receive : function(result) {
+					receive: function(result) {
 						console.log('result: ' + JSON.stringify(result, null, 2));
 						sequence.next();
 					}.bind(this)

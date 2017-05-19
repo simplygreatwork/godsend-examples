@@ -81,7 +81,8 @@
         {
           "topic": "store",
           "action": "put",
-          "collection": "tasks"
+          "collection": "tasks",
+          "encode": true
         },
         {
           "topic": "store",
@@ -97,7 +98,13 @@
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [],
+      "sendable": [
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "log"
+        }
+      ],
       "receivable": [
         {
           "topic": "store",
@@ -128,7 +135,8 @@
         {
           "topic": "store",
           "action": "put",
-          "collection": "tasks"
+          "collection": "tasks",
+          "encode": true
         },
         {
           "topic": "taxation",

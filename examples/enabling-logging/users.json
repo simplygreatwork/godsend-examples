@@ -60,10 +60,18 @@
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [],
-      "receivable": [{
-			"action": "send-message"
-      }]
+      "sendable": [
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "log"
+        }
+      ],
+      "receivable": [
+        {
+          "action": "send-message"
+        }
+      ]
     }
   },
   "sender": {
@@ -72,9 +80,11 @@
       "passphrase": "passphrase-to-hash"
     },
     "patterns": {
-      "sendable": [{
-			"action": "send-message"
-      }],
+      "sendable": [
+        {
+          "action": "send-message"
+        }
+      ],
       "receivable": []
     }
   }
