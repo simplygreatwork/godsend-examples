@@ -10,7 +10,7 @@ Example = Class.extend({
 	initialize: function() {
 		
 		new basic.Server({
-			learn : false
+			learn : true
 		}).start(function() {
 			new basic.Authorizer().connect(function() {
 				new Agent().start();
@@ -33,11 +33,7 @@ Agent = Class.extend({
 			}
 		});
 		connection.install({
-			service : new (require('godsend-extras/src/Decoder'))({}),
-		});
-		connection.remount({
-			id : 'decode',
-			weight : -5
+			service : new (require('godsend-extras/src/Encoder'))({})
 		});
 		connection.mount({
 			id: 'transformer',
@@ -53,13 +49,6 @@ Agent = Class.extend({
 				stream.next();
 			}.bind(this)
 		});
-		connection.install({
-			service : new (require('godsend-extras/src/Encoder'))({}),
-		});
-		connection.remount({
-			id : 'encode',
-			weight : 5
-		});
 	}
 });
 
@@ -74,10 +63,22 @@ Sender = Class.extend({
 				passphrase: basic.Credentials.get('sender').passphrase,
 			}
 		});
+		connection.install({
+			service : new (require('godsend-extras/src/Encoder'))({
+				config : {
+					'encode' : {
+						route : 'outbound'
+					},
+					'decode' : {
+						route : 'inbound'
+					}
+				}
+			}),
+		});
 		connection.mount({
 			route : 'outbound',
-			id: 'filter-credentials',
-			weight : -2,
+			id: 'strip-credentials',
+			weight : -100,
 			on: function(request) {
 				request.accept();
 			}.bind(this),
@@ -90,24 +91,6 @@ Sender = Class.extend({
 				stream.next();
 			}.bind(this)
 		});
-		connection.install({
-			route : 'outbound',
-			service : new (require('godsend-extras/src/Encoder'))({}),
-		});
-		connection.remount({
-			route : 'outbound',
-			id : 'encode',
-			weight : -1
-		});
-		connection.install({
-			route : 'inbound',
-			service : new (require('godsend-extras/src/Decoder'))({}),
-		});
-		connection.remount({
-			route : 'inbound',
-			id : 'decode',
-			weight : 1
-		});
 		
 		var sequence = basic.Sequence.start(
 			
@@ -115,7 +98,8 @@ Sender = Class.extend({
 				
 				connection.send({
 					pattern: {
-						action: 'transform'
+						action: 'transform',
+						encode : true
 					},
 					data : {
 						message : 'This is an object to transform.',

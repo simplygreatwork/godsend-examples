@@ -87,6 +87,12 @@
           "topic": "store",
           "action": "put",
           "collection": "log"
+        },
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "tasks",
+          "encode": true
         }
       ]
     }
@@ -100,8 +106,20 @@
       "sendable": [],
       "receivable": [
         {
+          "topic": "store",
+          "action": "put-broadcast",
+          "collection": "tasks"
+        },
+        {
           "topic": "taxation",
-          "action": "calculate"
+          "action": "calculate",
+          "state": "texas"
+        },
+        {
+          "topic": "taxation",
+          "action": "calculate",
+          "state": "texas",
+          "city": "austin"
         }
       ]
     }
@@ -120,7 +138,20 @@
         },
         {
           "topic": "taxation",
-          "action": "calculate"
+          "action": "calculate",
+          "state": "texas"
+        },
+        {
+          "topic": "taxation",
+          "action": "calculate",
+          "state": "texas",
+          "city": "austin"
+        },
+        {
+          "topic": "store",
+          "action": "put",
+          "collection": "tasks",
+          "encode": true
         }
       ],
       "receivable": []

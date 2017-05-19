@@ -42,16 +42,7 @@
     },
     "patterns": {
       "sendable": [],
-      "receivable": [
-        {
-          "topic": "authentication",
-          "action": "get-user"
-        },
-        {
-          "topic": "authentication",
-          "action": "put-user"
-        }
-      ]
+      "receivable": []
     }
   },
   "agent": {
@@ -63,7 +54,8 @@
       "sendable": [],
       "receivable": [
         {
-          "action": "transform"
+          "action": "transform",
+          "encode": true
         }
       ]
     }
@@ -76,7 +68,8 @@
     "patterns": {
       "sendable": [
         {
-          "action": "transform"
+          "action": "transform",
+          "encode": true
         }
       ],
       "receivable": []

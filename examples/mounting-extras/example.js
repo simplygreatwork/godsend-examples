@@ -34,36 +34,6 @@ Services = Class.extend({
 			}
 		});
 		connection.install({
-			route : 'outbound',
-			service : new (require('godsend-extras/src/Encoder'))({}),
-		});
-		connection.remount({
-			route : 'outbound',
-			id : 'encode',
-			weight : -1,
-			on : function(request) {
-				request.accept({
-					topic : 'store',
-					action : 'put'
-				});
-			}
-		});
-		connection.install({
-			route : 'rebound',
-			service : new (require('godsend-extras/src/Decoder'))({}),
-		});
-		connection.remount({
-			route : 'rebound',
-			id : 'decode',
-			before : 'request-logger',
-			on : function(request) {
-				request.accept({
-					topic : 'store',
-					action : 'put'
-				});
-			}
-		});
-		connection.install({
 			service : new (require('godsend-extras/src/Logger'))({}),
 		});
 		connection.install({
@@ -75,18 +45,23 @@ Services = Class.extend({
 		connection.install({
 			service : new (require('godsend-extras/src/Broadcaster'))({}),
 		});
+		connection.install({
+			service : new (require('godsend-extras/src/Encoder'))({
+				config : {
+					'decode' : {
+						weight : -150
+					}
+				}
+			}),
+		});
 		connection.mount({
-			id: 'inspector',
-			after : 'decode',
-			before : 'request-logger',
+			id: 'inspect',
+			weight : -125,
 			on: function(request) {
-				request.accept({
-					topic: 'store',
-					action: 'put'
-				});
+				request.accept();
 			}.bind(this),
 			run: function(stream) {
-				if (false) console.log('stream.object: ' + JSON.stringify(stream.object));
+				if (false) console.log('unencoded: ' + JSON.stringify(stream.object));
 				stream.push(stream.object);
 				stream.next();
 			}.bind(this)
@@ -119,7 +94,9 @@ Agent = Class.extend({
 			}.bind(this),
 			run: function(stream) {
 				console.log('The agent has been notified about a task put.');
-				stream.push(stream.object);
+				stream.push({
+					notified : true
+				});
 				stream.next();
 			}.bind(this)
 		});
@@ -138,19 +115,14 @@ Sender = Class.extend({
 			}
 		});
 		connection.install({
-			route : 'outbound',
-			service : new (require('godsend-extras/src/Encoder'))({}),
-		});
-		connection.remount({
-			route : 'outbound',
-			id : 'encode',
-			weight : -1,
-			on : function(request) {
-				request.accept({
-					topic : 'store',
-					action : 'put'
-				});
-			}
+			service : new (require('godsend-extras/src/Encoder'))({
+				config : {
+					'encode' : {
+						route : 'outbound',
+						weight : -1
+					}
+				}
+			})
 		});
 		connection.mount({
 			route : 'inbound',
@@ -176,7 +148,8 @@ Sender = Class.extend({
 					pattern: {
 						topic: 'store',
 						action: 'put',
-						collection : 'tasks'
+						collection : 'tasks',
+						encode : true
 					},
 					data : [{
 						key : uuid.v4(),
