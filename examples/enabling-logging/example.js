@@ -34,18 +34,6 @@ Agent = Class.extend({
 			}
 		});
 		
-		// connection.mount({
-		// 	id: 'log-message',
-		// 	on: function(request) {
-		// 		request.accept();
-		// 	}.bind(this),
-		// 	run: function(stream) {
-		// 		console.log('logging');
-		// 		stream.push(stream.object);
-		// 		stream.next();
-		// 	}.bind(this)
-		// });
-		
 		connection.install({
 			service : new (require('godsend-extras/src/Logger'))({}),
 		});
