@@ -10,7 +10,7 @@ Example = Class.extend({
 	initialize: function() {
 		
 		new basic.Server({
-			learn : true
+			learn : false
 		}).start(function() {
 			new basic.Authorizer().connect(function() {
 				new Agent().start();
@@ -33,7 +33,16 @@ Agent = Class.extend({
 			}
 		});
 		connection.install({
-			service : new (require('godsend-extras/src/Encoder'))({})
+			service : new (require('godsend-extras/src/Encoder'))({
+				config : {
+					'encode' : {
+						route : 'rebound'
+					},
+					'decode' : {
+						route : 'rebound'
+					}
+				}
+			}),
 		});
 		connection.mount({
 			id: 'transformer',
@@ -44,6 +53,7 @@ Agent = Class.extend({
 				});
 			}.bind(this),
 			run: function(stream) {
+				console.log('transforming');
 				stream.object.status = 'This object was encoded, sent, decoded, transformed, encoded, returned, and decoded.';
 				stream.push(stream.object);
 				stream.next();
