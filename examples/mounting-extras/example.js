@@ -164,7 +164,7 @@ Sender = Class.extend({
 						topic: 'store',
 						action: 'put',
 						collection : 'tasks',
-						encode : true
+						encodable : true
 					},
 					data : [{
 						key : uuid.v4(),

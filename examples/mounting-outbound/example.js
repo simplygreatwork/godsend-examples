@@ -33,16 +33,7 @@ Agent = Class.extend({
 			}
 		});
 		connection.install({
-			service : new (require('godsend-extras/src/Encoder'))({
-				config : {
-					'encode' : {
-						route : 'rebound'
-					},
-					'decode' : {
-						route : 'rebound'
-					}
-				}
-			}),
+			service : new (require('godsend-extras/src/Encoder'))({}),
 		});
 		connection.mount({
 			id: 'transformer',
@@ -53,7 +44,6 @@ Agent = Class.extend({
 				});
 			}.bind(this),
 			run: function(stream) {
-				console.log('transforming');
 				stream.object.status = 'This object was encoded, sent, decoded, transformed, encoded, returned, and decoded.';
 				stream.push(stream.object);
 				stream.next();
@@ -109,7 +99,7 @@ Sender = Class.extend({
 				connection.send({
 					pattern: {
 						action: 'transform',
-						encode : true
+						encodable : true
 					},
 					data : {
 						message : 'This is an object to transform.',

@@ -55,7 +55,7 @@
       "receivable": [
         {
           "action": "transform",
-          "encode": true
+          "encodable": true
         }
       ]
     }
@@ -69,7 +69,7 @@
       "sendable": [
         {
           "action": "transform",
-          "encode": true
+          "encodable": true
         }
       ],
       "receivable": []

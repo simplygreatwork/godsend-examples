@@ -194,7 +194,7 @@ Sender = Class.extend({
 			
 			function() {
 				
-				connection.send({			
+				connection.send({
 					pattern: {
 						topic: 'store',
 						action: 'get',
