@@ -65,59 +65,20 @@ Sender = Class.extend({
 						action: 'put',
 						collection: 'tasks'
 					},
-					data: {
-						key : uuid.v4(),
-						value : {
-							label : 'Task One'
+					write : function(stream) {
+						for (var i = 0; i < 10; i++) {
+							stream.write({
+								key : this.key = uuid.v4(),
+								value : {
+									title : 'Task ' + Math.floor(Math.random() * 100),
+									done : Math.random() > 0.5 ? true : false 
+								}
+							});
 						}
-					},
+						stream.end();
+					}.bind(this),
 					receive: function(result) {
 						console.log('result: ' + JSON.stringify(result, null, 2));
-						sequence.next();
-					}.bind(this)
-				});
-				
-			}.bind(this),
-
-			function() {
-				
-				connection.send({
-					pattern: {
-						topic: 'store',
-						action: 'put',
-						collection: 'tasks'
-					},
-					data: {
-						key : uuid.v4(),
-						value : {
-							label : 'Task Two'
-						}
-					},
-					receive: function(result) {
-						console.log('result: ' + JSON.stringify(result, null, 2));
-						sequence.next();
-					}.bind(this)
-				});
-				
-			}.bind(this),
-			
-			function() {
-				
-				connection.send({
-					pattern: {
-						topic: 'store',
-						action: 'find',
-						collection: 'tasks'
-					},
-					data: {
-						limit: 100,
-						fields: {}
-					},
-					receive: function(result) {
-						console.log('result: ' + JSON.stringify(result, null, 2));
-						if (result.objects.length > 0) {
-							this.key = result.objects[0].key;
-						}
 						sequence.next();
 					}.bind(this)
 				});
@@ -131,17 +92,39 @@ Sender = Class.extend({
 						pattern: {
 							topic: 'store',
 							action: 'get',
-							collection: 'tasks'
-						},
-						data: {
-							key : this.key
+							collection: 'tasks',
+							match : {
+								id : this.key
+							}
 						},
 						receive: function(result) {
 							console.log('result: ' + JSON.stringify(result, null, 2));
 							sequence.next();
 						}.bind(this)
 					});
+				} else {
+					sequence.next();
 				}
+				
+			}.bind(this),
+			
+			function() {
+				
+				connection.send({
+					pattern: {
+						topic: 'store',
+						action: 'get',
+						collection: 'tasks',
+						reduce : {
+							offset : 0,
+							limit : 5
+						}
+					},
+					receive: function(result) {
+						console.log('result: ' + JSON.stringify(result, null, 2));
+						sequence.next();
+					}.bind(this)
+				});
 				
 			}.bind(this),
 			
