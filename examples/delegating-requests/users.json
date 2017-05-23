@@ -1,0 +1,181 @@
+{
+  "broker": {
+    "credentials": {
+      "username": "broker",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [
+        {
+          "topic": "authentication",
+          "action": "get-user"
+        },
+        {
+          "topic": "authentication",
+          "action": "put-user"
+        },
+        {
+          "topic": "presence",
+          "action": "online"
+        },
+        {
+          "topic": "presence",
+          "action": "offline"
+        }
+      ],
+      "receivable": [
+        {
+          "topic": "authentication",
+          "action": "sign-in"
+        },
+        {
+          "topic": "authentication",
+          "action": "sign-out"
+        }
+      ]
+    }
+  },
+  "authenticator": {
+    "credentials": {
+      "username": "authenticator",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [
+        {
+          "topic": "authentication",
+          "action": "get-user"
+        },
+        {
+          "topic": "authentication",
+          "action": "put-user"
+        }
+      ]
+    }
+  },
+  "delegate-1": {
+    "credentials": {
+      "username": "delegate-1",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [
+        {
+          "action": "send-message-delegate",
+          "delegate": 1
+        }
+      ]
+    }
+  },
+  "delegate-2": {
+    "credentials": {
+      "username": "delegate-2",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [
+        {
+          "action": "send-message-delegate",
+          "delegate": 2
+        }
+      ]
+    }
+  },
+  "delegate-3": {
+    "credentials": {
+      "username": "delegate-3",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [
+        {
+          "action": "send-message-delegate",
+          "delegate": 3
+        }
+      ]
+    }
+  },
+  "delegate-4": {
+    "credentials": {
+      "username": "delegate-4",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [
+        {
+          "action": "send-message-delegate",
+          "delegate": 4
+        }
+      ]
+    }
+  },
+  "delegate-5": {
+    "credentials": {
+      "username": "delegate-5",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [],
+      "receivable": [
+        {
+          "action": "send-message-delegate",
+          "delegate": 5
+        }
+      ]
+    }
+  },
+  "agent": {
+    "credentials": {
+      "username": "agent",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [
+        {
+          "action": "send-message-delegate",
+          "delegate": 1
+        },
+        {
+          "action": "send-message-delegate",
+          "delegate": 2
+        },
+        {
+          "action": "send-message-delegate",
+          "delegate": 3
+        },
+        {
+          "action": "send-message-delegate",
+          "delegate": 4
+        },
+        {
+          "action": "send-message-delegate",
+          "delegate": 5
+        }
+      ],
+      "receivable": [
+        {
+          "action": "send-message"
+        }
+      ]
+    }
+  },
+  "sender": {
+    "credentials": {
+      "username": "sender",
+      "passphrase": "passphrase-to-hash"
+    },
+    "patterns": {
+      "sendable": [
+        {
+          "action": "send-message"
+        }
+      ],
+      "receivable": []
+    }
+  }
+}
