@@ -11,9 +11,7 @@ Example = Class.extend({
 		new basic.Server({
 			learn : false
 		}).start(function() {
-			new basic.Authorizer({
-				users: this.users
-			}).connect(function() {
+			new basic.Authorizer().connect(function() {
 				new Agent().start();
 				new Administrator().start();
 				console.log('The example has started.');
