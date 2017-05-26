@@ -263,5 +263,4 @@ Watcher = Class.extend({
 	}
 });
 
-
 new Example();
