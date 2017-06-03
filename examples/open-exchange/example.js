@@ -13,54 +13,60 @@ Example = Class.extend({
 			address : basic.Utility.local(),
 			exchange : new godsend.Exchange.Open()
 		}).start(function() {
-			new Agent().start();
+			new Agent.One().start();
+			new Agent.Two().start();
 			new Sender().start();
 			console.log('The example has started.');
 		}.bind(this));
 	}
 });
 
-Agent = Class.extend({
+Agent = {
 	
-	start: function() {
+	One : Class.extend({
 		
-		var connection = godsend.connect({
-			address: basic.Utility.local(),
-			credentials: {
-				username: basic.Credentials.get('agent').username,
-				passphrase: basic.Credentials.get('agent').passphrase,
-			}
-		});
+		start: function() {
+			
+			var connection = godsend.connect({
+				address: basic.Utility.local()
+			});
+			
+			connection.mount({
+				id: 'send-message',
+				on: function(request) {
+					request.accept({
+						action: 'send-message'
+					});
+				}.bind(this),
+				run: function(stream) {
+					stream.push({
+						message: 'Received a message from the sender!'
+					});
+					stream.next();
+				}.bind(this)
+			});
+		}
+	}),
+	
+	Two : Class.extend({
 		
-		connection.mount({
-			id: 'send-message',
-			on: function(request) {
-				request.accept({
-					action: 'send-message'
-				});
-			}.bind(this),
-			run: function(stream) {
-				stream.push({
-					message: 'Received a message from the sender!'
-				});
-				stream.next();
-			}.bind(this)
-		});
-	}
-});
+		start: function() {
+			
+			var connection = godsend.connect({
+				address: basic.Utility.local()
+			});
+		}
+	})
+};
 
 Sender = Class.extend({
 	
 	start: function() {
 		
 		var connection = godsend.connect({
-			address: basic.Utility.local(),
-			credentials: {
-				username: basic.Credentials.get('sender').username,
-				passphrase: basic.Credentials.get('sender').passphrase,
-			}
+			address: basic.Utility.local()
 		});
-
+		
 		var sequence = basic.Sequence.start(
 			
 			function() {
