@@ -90,19 +90,5 @@
       ],
       "receivable": []
     }
-  },
-  "new-user": {
-    "credentials": {
-      "username": "new-user",
-      "passphrase": "passphrase-to-hash"
-    },
-    "patterns": {
-      "sendable": [
-        {
-          "topic": "post-message"
-        }
-      ],
-      "receivable": []
-    }
   }
 }
