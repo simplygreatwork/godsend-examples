@@ -135,7 +135,7 @@ Sender = Class.extend({
 				});
 				
 			}.bind(this),
-
+			
 			function() {
 				
 				connection.send({
