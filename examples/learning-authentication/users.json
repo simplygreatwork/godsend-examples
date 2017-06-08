@@ -53,47 +53,5 @@
         }
       ]
     }
-  },
-  "agent": {
-    "credentials": {
-      "username": "agent",
-      "passphrase": "passphrase-to-hash"
-    },
-    "patterns": {
-      "sendable": [],
-      "receivable": [
-        {
-          "topic": "presence",
-          "action": "online"
-        },
-        {
-          "action": "transform-object"
-        },
-        {
-          "topic": "presence",
-          "action": "offline"
-        }
-      ]
-    },
-    "versions": {}
-  },
-  "sender": {
-    "credentials": {
-      "username": "sender",
-      "passphrase": "passphrase-to-hash"
-    },
-    "patterns": {
-      "sendable": [
-        {
-          "action": "transform-object"
-        },
-        {
-          "topic": "authentication",
-          "action": "sign-out"
-        }
-      ],
-      "receivable": []
-    },
-    "versions": {}
   }
 }
